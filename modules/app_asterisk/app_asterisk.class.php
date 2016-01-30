@@ -145,7 +145,7 @@ if (!$out['A_TABLE']) {
   }
   
   if (!$out['A_FILEDIR']) {
-    $out['A_FILEDIR']='/cached/records/';
+    $out['A_FILEDIR']='/cached/records';
   }
   
 if ($this->view_mode=='update_settings') {

@@ -28,13 +28,17 @@
     [#if SORTBY="calldate"#](+)[#endif#]
     [#if SORTBY="calldate DESC"#](-)[#endif#]</nobr>
 </th>
-<th> <a href="?sortby_asterisk=SRC&save_qry=1"><#LANG_AFROM#></a><nobr>
+<th> <a href="?sortby_asterisk=src&save_qry=1"><#LANG_AFROM#></a><nobr>
     [#if SORTBY="src"#](+)[#endif#]
     [#if SORTBY="src DESC"#](-)[#endif#]</nobr>
 </th>
-<th> <a href="?sortby_asterisk=DST&save_qry=1"><#LANG_ATO#></a><nobr>
+<th> <a href="?sortby_asterisk=dst&save_qry=1"><#LANG_ATO#></a><nobr>
     [#if SORTBY="dst"#](+)[#endif#]
     [#if SORTBY="dst DESC"#](-)[#endif#]</nobr>
+</th>
+<th> <a href="?sortby_asterisk=duration&save_qry=1"><#LANG_ADURATION#></a><nobr>
+    [#if SORTBY="duration"#](+)[#endif#]
+    [#if SORTBY="duration DESC"#](-)[#endif#]</nobr>
 </th>
 <th><#LANG_ARECORD#></th>
 </tr>
@@ -45,6 +49,7 @@
         <td>[#calldate#]</td>
         <td>[#src#]</td>
         <td>[#dst#]</td>
+        <td>[#duration#]</td>
 	[#if filename="none"#]
 	    <td><#LANG_ANORECORD#></td>
 	[#else#]

@@ -28,7 +28,8 @@ $dictionary=array(
 'ANORECORD'=>'No record',
 'ANORECORDS'=>'No records',
 'APAGES'=>'Pages',
-'ARECPERPAGE'=>'Records per page'
+'ARECPERPAGE'=>'Records per page',
+'ADURATION'=>'Duration'
 
 /* end module names */
 

@@ -8,32 +8,41 @@ global $session;
      $out['CONTROLPANEL']=1;
   }
   $qry="1";
+
   // search filters
   //searching 'CALLDATE' (datetime)
   global $calldate;
   if ($calldate!='') {
-   $qry.=" AND calldate LIKE '%".DBSafe($calldate)."%'";
-   $out['CALLDATE']=$calldate;
+    $qry.=" AND calldate LIKE '%".DBSafe($calldate)."%'";
+    $out['calldate']=$calldate;
   }
 
   //searching 'SRC' (varchar)
   global $src;
   if ($src!='') {
    $qry.=" AND src LIKE '%".DBSafe($src)."%'";
-   $out['SRC']=$src;
+   $out['src']=$src;
   }
 
   //searching 'DST' (varchar)
   global $dst;
   if ($dst!='') {
    $qry.=" AND dst LIKE '%".DBSafe($dst)."%'";
-   $out['DST']=$dst;
+   $out['dst']=$dst;
   }
+
+  //searching 'DURATION' (varchar)
+  global $duration;
+  if ($duration!='') {
+   $qry.=" AND duration >= '%".DBSafe($duration)."%'";
+   $out['duration']=$duration;
+  }
+
 
   //searching 'RECPERPAGE' (varchar)
   global $recperpage;
   if ($recperpage!='') {
-   $out['RECPERPAGE']=$recperpage;
+   $out['recperpage']=$recperpage;
   }
 
 //  global $save_qry;

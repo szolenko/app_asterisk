@@ -5,14 +5,20 @@
 </tr>
 <form action="?" method="post" name="search_asterisk">
  <tr>
-  <td align=right><#LANG_ADATE#>:&nbsp;<input type="date" name="calldate" value="[#calldate#]"></td>
-  <td align=right><#LANG_AFROM#>:&nbsp;<input type="text" name="src" value="[#src#]"></td>
-  <td align=right><#LANG_ATO#>:&nbsp;<input type="text" name="dst" value="[#src#]"></td>
+  <td align=left><#LANG_ADATE#>:&nbsp;<input type="date" name="calldate" value="[#calldate#]"></td>
  </tr>
  <tr>
-    <td align=right><#LANG_ARECPERPAGE#>&nbsp;
+  <td align=left><#LANG_AFROM#>:&nbsp;<input type="text" name="src" value="[#src#]"></td>
+  <td align=left><#LANG_ATO#>:&nbsp;<input type="text" name="dst" value="[#dst#]"></td>
+ </tr>
+ <tr>
+  <td align=left><#LANG_ADURATION#>:&nbsp;<input type="text" name="duration" value="[#duration#]"></td>
+ </tr>
+
+ <tr>
+    <td align=left><#LANG_ARECPERPAGE#>&nbsp;
 	<select name="recperpage" style="color:black">
-	<option selected value="[#RECPERPAGE#]">[#RECPERPAGE#]</option>
+	<option selected value="[#recperpage#]">[#recperpage#]</option>
 	<option disabled value=""></option>
 	<option value="10">10</option>
 	<option value="20">20</option>

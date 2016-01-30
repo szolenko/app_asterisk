@@ -28,7 +28,8 @@ $dictionary=array(
 'ANORECORD'=>'Записи нет',
 'ANORECORDS'=>'Записей нет',
 'APAGES'=>'Cтраницы',
-'ARECPERPAGE'=>'Записей на странице'
+'ARECPERPAGE'=>'Записей на странице',
+'ADURATION'=>'Длительность'
 /* end module names */
 
 
