@@ -45,7 +45,11 @@
         <td>[#CALLDATE#]</td>
         <td>[#SRC#]</td>
         <td>[#DST#]</td>
-        <td><audio src="[#A_FILEDIR#]'.[#FILENAME#]. '" controls></audio></td>
+	[#if FILENAME="none"#]
+	    <td><#LANG_ANORECORD#></td>
+	[#else#]
+	    <td><audio src="<#A_FILEDIR#>/[#FILENAME#]" controls></audio></td>
+	[#endif#]
     </tr>
 [#end ARECORDS#]
 </tbody>

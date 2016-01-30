@@ -27,7 +27,7 @@ global $session;
   global $dst;
   if ($dst!='') {
    $qry.=" AND DST LIKE '%".DBSafe($dst)."%'";
-   $out['DST']=$src;
+   $out['DST']=$dst;
   }
 
   //searching 'RECPERPAGE' (varchar)
@@ -36,8 +36,6 @@ global $session;
    $out['RECPERPAGE']=$recperpage;
   }
 
-
-  // QUERY READY
 //  global $save_qry;
 //  if ($save_qry) {
 //    $qry=$session->data['asrerisk_qry'];
@@ -86,7 +84,6 @@ while ($res[] = mysql_fetch_row($qry,MYSQL_ASSOC)) {
     paging($out['ARECORDS'], $recperpage, $out); // search result paging
     $total=count($res);
 };
-
 
 mysql_close($ast_db);
 

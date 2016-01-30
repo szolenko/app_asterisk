@@ -166,7 +166,6 @@ if ($this->view_mode=='update_settings') {
    $this->saveConfig();
    $this->redirect("?"); 
   }
-
       require (DIR_MODULES.$this->name.'/search_records.inc.php');
 }
 
