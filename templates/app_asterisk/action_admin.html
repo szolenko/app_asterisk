@@ -1,0 +1,22 @@
+<!-- action admin -->
+
+<big><#LANG_ATITLE#></big>
+
+<ul class="nav nav-tabs">
+ <li [#if VIEW_MODE==""#]class="active"[#endif#]><a href="?view_mode="><#LANG_ARECORDS#></a></li>
+ <li [#if VIEW_MODE=="setting"#]class="active"[#endif#]><a href="?view_mode=setting"><#LANG_ASETTINGS#></a></li>
+ <li [#if VIEW_MODE=="help"#]class="active"[#endif#]><a href="?view_mode=help"><#LANG_AHELP#></a></li>
+</ul><br>
+
+[#if VIEW_MODE=""#]
+        [#inc action_usual.html#]
+[#endif VIEW_MODE#]
+
+[#if VIEW_MODE="setting"#]
+    [#inc action_settings.html#]
+[#endif VIEW_MODE#]
+
+
+[#if VIEW_MODE="help"#]
+        [#inc help.html#]
+[#endif VIEW_MODE#]
