@@ -12,21 +12,21 @@ global $session;
   //searching 'CALLDATE' (datetime)
   global $calldate;
   if ($calldate!='') {
-   $qry.=" AND CALLDATE LIKE '%".DBSafe($calldate)."%'";
+   $qry.=" AND calldate LIKE '%".DBSafe($calldate)."%'";
    $out['CALLDATE']=$calldate;
   }
 
   //searching 'SRC' (varchar)
   global $src;
   if ($src!='') {
-   $qry.=" AND SRC LIKE '%".DBSafe($src)."%'";
+   $qry.=" AND src LIKE '%".DBSafe($src)."%'";
    $out['SRC']=$src;
   }
 
   //searching 'DST' (varchar)
   global $dst;
   if ($dst!='') {
-   $qry.=" AND DST LIKE '%".DBSafe($dst)."%'";
+   $qry.=" AND dst LIKE '%".DBSafe($dst)."%'";
    $out['DST']=$dst;
   }
 
@@ -58,7 +58,7 @@ global $session;
    }
    $session->data['asterisk_sort']=$sortby_asterisk;
   }
-  $sortby_asterisk="CALLDATE DESC";
+  $sortby_asterisk="calldate DESC";
   $out['SORTBY']=$sortby_asterisk;
 
 
@@ -80,7 +80,7 @@ while ($res[] = mysql_fetch_row($qry,MYSQL_ASSOC)) {
     $out['ARECORDS'] = $res;
 }
 
- if ($out['ARECORDS'][0]['CALLDATE']){
+ if ($out['ARECORDS'][0]['calldate']){
     paging($out['ARECORDS'], $recperpage, $out); // search result paging
     $total=count($res);
 };

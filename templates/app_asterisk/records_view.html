@@ -24,17 +24,17 @@
 <table  align=center class="table table-stripped">
 <thead>
 <tr>
-<th> <a href="?sortby_asterisk=CALLDATE&save_qry=1"><#LANG_ADATE#></a><nobr>
-    [#if SORTBY="CALLDATE"#](+)[#endif#]
-    [#if SORTBY="CALLDATE DESC"#](-)[#endif#]</nobr>
+<th> <a href="?sortby_asterisk=calldate&save_qry=1"><#LANG_ADATE#></a><nobr>
+    [#if SORTBY="calldate"#](+)[#endif#]
+    [#if SORTBY="calldate DESC"#](-)[#endif#]</nobr>
 </th>
 <th> <a href="?sortby_asterisk=SRC&save_qry=1"><#LANG_AFROM#></a><nobr>
-    [#if SORTBY="SRC"#](+)[#endif#]
-    [#if SORTBY="SRC DESC"#](-)[#endif#]</nobr>
+    [#if SORTBY="src"#](+)[#endif#]
+    [#if SORTBY="src DESC"#](-)[#endif#]</nobr>
 </th>
 <th> <a href="?sortby_asterisk=DST&save_qry=1"><#LANG_ATO#></a><nobr>
-    [#if SORTBY="DST"#](+)[#endif#]
-    [#if SORTBY="DST DESC"#](-)[#endif#]</nobr>
+    [#if SORTBY="dst"#](+)[#endif#]
+    [#if SORTBY="dst DESC"#](-)[#endif#]</nobr>
 </th>
 <th><#LANG_ARECORD#></th>
 </tr>
@@ -42,13 +42,13 @@
 <tbody>
 [#begin ARECORDS#]
     <tr>
-        <td>[#CALLDATE#]</td>
-        <td>[#SRC#]</td>
-        <td>[#DST#]</td>
-	[#if FILENAME="none"#]
+        <td>[#calldate#]</td>
+        <td>[#src#]</td>
+        <td>[#dst#]</td>
+	[#if filename="none"#]
 	    <td><#LANG_ANORECORD#></td>
 	[#else#]
-	    <td><audio src="<#A_FILEDIR#>/[#FILENAME#]" controls></audio></td>
+	    <td><audio src="<#A_FILEDIR#>/[#filename#]" controls></audio></td>
 	[#endif#]
     </tr>
 [#end ARECORDS#]
