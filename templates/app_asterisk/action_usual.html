@@ -1,8 +1,6 @@
-
- <!-- action usual -->
- <!-- table records search -->
- [#if VIEW_MODE="search_records" || VIEW_MODE=""#]
-  [#inc records_search.html#]
-  [#inc records_view.html#]
+<!--# Action Usual #-->
+<!-- CDR VIEW -->
+[#if VIEW_MODE="search_cdr" || VIEW_MODE=""#]
+   [#inc search_cdr.html#]
  [#endif VIEW_MODE#]
- <!-- / table records search -->
+ <!-- / CDR VIEW -->

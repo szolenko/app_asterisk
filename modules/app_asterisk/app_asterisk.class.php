@@ -1,16 +1,15 @@
-<?
+<?php
 /**
-* Asterisk
-*
-*
+* Asterisk 
 * @package project
-* @author Alien <szolenko@gmail.com>
+* @author Sergii Zolenko <szolenko@gmail.com>
+* @version 0.1 (Feb 01, 2016)
 */
 //
 //
 class app_asterisk extends module {
 /**
-* Asterisk
+* app_asterisk
 *
 * Module class constructor
 *
@@ -18,7 +17,7 @@ class app_asterisk extends module {
 */
 function app_asterisk() {
   $this->name="app_asterisk";
-  $this->title="<#LANG_ATITLE#>";
+  $this->title="Asterisk";
   $this->module_category="<#LANG_SECTION_APPLICATIONS#>";
   $this->checkInstalled();
 }
@@ -29,7 +28,7 @@ function app_asterisk() {
 *
 * @access public
 */
-function saveParams() {
+function saveParams($data=0) {
  $p=array();
  if (IsSet($this->id)) {
   $p["id"]=$this->id;
@@ -99,13 +98,10 @@ function run() {
   $out['EDIT_MODE']=$this->edit_mode;
   $out['MODE']=$this->mode;
   $out['ACTION']=$this->action;
-  if ($this->single_rec) {
-   $out['SINGLE_REC']=1;
-  }
+  $out['TAB']=$this->tab;
   $this->data=$out;
   $p=new parser(DIR_TEMPLATES.$this->name."/".$this->name.".html", $this->data, $this);
   $this->result=$p->result;
-
 }
 /**
 * BackEnd
@@ -115,60 +111,52 @@ function run() {
 * @access public
 */
 function admin(&$out) {
-$this->getConfig();
-  $out['A_HOST']=$this->config['A_HOST'];
-  $out['A_PORT']=$this->config['A_PORT'];
-  $out['A_BASE']=$this->config['A_BASE'];
-  $out['A_TABLE']=$this->config['A_TABLE'];
-  $out['A_USERNAME']=$this->config['A_USERNAME'];
-  $out['A_PASSWORD']=$this->config['A_PASSWORD'];
-  $out['A_FILEDIR']=$this->config['A_FILEDIR'];
-  
-  if (!$out['A_HOST']) {
-    $out['A_HOST']='localhost';
-  }
+ $this->getConfig();
+ $out['AHOST']=$this->config['AHOST'];
+ if (!$out['AHOST']) {
+  $out['AHOST']='localhost';
+ }
+ $out['ABASE']=$this->config['ABASE'];
+ if (!$out['ABASE']) {
+  $out['ABASE']='asterisk';
+ }
+ $out['AUSERNAME']=$this->config['AUSERNAME'];
+ if (!$out['AUSERNAME']) {
+  $out['AUSERNAME']='root';
+ }
+ $out['APASSWORD']=$this->config['APASSWORD'];
 
-if (!$out['A_PORT']) {
-    $out['A_PORT']='3306';
-  }
-
-if (!$out['A_BASE']) {
-    $out['A_BASE']='asterisk';
-  }
-
-if (!$out['A_TABLE']) {
-    $out['A_TABLE']='cdr';
-  }
-  
-  if (!$out['A_USERNAME']) {
-    $out['A_USERNAME']='root';
-  }
-  
-  if (!$out['A_FILEDIR']) {
-    $out['A_FILEDIR']='/cached/records';
-  }
-  
-if ($this->view_mode=='update_settings') {
-   global $a_host;
-   global $a_port;
-   global $a_base;
-   global $a_table;
-   global $a_username;
-   global $a_password;
-   global $a_filedir;
-   $this->config['A_HOST']=$a_host;
-   $this->config['A_PORT']=$a_port;
-   $this->config['A_BASE']=$a_base;
-   $this->config['A_TABLE']=$a_table;
-   $this->config['A_USERNAME']=$a_username;
-   $this->config['A_PASSWORD']=$a_password;
-   $this->config['A_FILEDIR']=$a_filedir;
+ if ($this->view_mode=='update_settings') {
+   global $ahost;
+   $this->config['AHOST']=$ahost;
+   global $abase;
+   $this->config['ABASE']=$abase;
+   global $ausername;
+   $this->config['AUSERNAME']=$ausername;
+   global $apassword;
+   $this->config['APASSWORD']=$apassword;
    $this->saveConfig();
-   $this->redirect("?"); 
+   $this->redirect("?");
+ }
+ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
+  $out['SET_DATASOURCE']=1;
+ }
+ if ($this->data_source=='app_asterisk' || $this->data_source=='') {
+  if ($this->view_mode=='' || $this->view_mode=='search_app_asterisk') {
+   $this->search_app_asterisk($out);
   }
-      require (DIR_MODULES.$this->name.'/search_records.inc.php');
+  if ($this->view_mode=='edit_app_asterisk') {
+   $this->edit_app_asterisk($out, $this->id);
+  }
+  if ($this->view_mode=='delete_app_asterisk') {
+   $this->delete_app_asterisk($this->id);
+   $this->redirect("?");
+  }
+  if ($this->view_mode=='search_cdr') {
+   $this->search_cdr($out, $this->id);
+  }
+ }
 }
-
 /**
 * FrontEnd
 *
@@ -177,12 +165,43 @@ if ($this->view_mode=='update_settings') {
 * @access public
 */
 function usual(&$out) {
-    $this->admin($out);
-
-    $asterisk = new app_asterisk();
-    $asterisk->getConfig();
-
+ $this->admin($out);
 }
+/**
+* app_asterisk search
+*
+* @access public
+*/
+ function search_app_asterisk(&$out) {
+  require(DIR_MODULES.$this->name.'/app_asterisk_search.inc.php');
+ }
+/**
+* app_asterisk edit/add
+*
+* @access public
+*/
+ function edit_app_asterisk(&$out, $id) {
+  require(DIR_MODULES.$this->name.'/app_asterisk_edit.inc.php');
+ }
+/**
+* app_asterisk delete record
+*
+* @access public
+*/
+ function delete_app_asterisk($id) {
+  $rec=SQLSelectOne("SELECT * FROM app_asterisk WHERE ID='$id'");
+  // some action for related tables
+  SQLExec("DELETE FROM app_asterisk WHERE ID='".$rec['ID']."'");
+ }
+/**
+* cdr search
+*
+* @access public
+*/
+ function search_cdr(&$out) {
+  require(DIR_MODULES.$this->name.'/cdr_search.inc.php');
+ }
+
 /**
 * Install
 *
@@ -190,9 +209,43 @@ function usual(&$out) {
 *
 * @access private
 */
- function install($parent_name="") {
-  parent::install($parent_name);
+ function install($data='') {
+  parent::install();
+ }
+/**
+* Uninstall
+*
+* Module uninstall routine
+*
+* @access public
+*/
+ function uninstall() {
+  SQLExec('DROP TABLE IF EXISTS app_asterisk');
+  parent::uninstall();
+ }
+/**
+* dbInstall
+*
+* Database installation routine
+*
+* @access private
+*/
+ function dbInstall() {
+/*
+app_asterisk - 
+*/
+  $data = <<<EOD
+ app_asterisk: ID int(10) unsigned NOT NULL auto_increment
+ app_asterisk: TYPE varchar(255) NOT NULL DEFAULT ''
+ app_asterisk: TABLE varchar(255) NOT NULL DEFAULT ''
+ app_asterisk: CALLDATE varchar(255) NOT NULL DEFAULT ''
+ app_asterisk: SRC varchar(255) NOT NULL DEFAULT ''
+ app_asterisk: DST varchar(255) NOT NULL DEFAULT ''
+ app_asterisk: DURATION varchar(255) NOT NULL DEFAULT ''
+ app_asterisk: FILEDIR varchar(255) NOT NULL DEFAULT ''
+ app_asterisk: FILENAME varchar(255) NOT NULL DEFAULT ''
+EOD;
+  parent::dbInstall($data);
  }
 // --------------------------------------------------------------------
 }
-?>

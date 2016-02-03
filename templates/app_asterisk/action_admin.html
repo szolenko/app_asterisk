@@ -1,22 +1,75 @@
-<!-- action admin -->
-
-<big><#LANG_ATITLE#></big>
-
+ <!-- action admin -->
 <ul class="nav nav-tabs">
- <li [#if VIEW_MODE==""#]class="active"[#endif#]><a href="?view_mode="><#LANG_ARECORDS#></a></li>
- <li [#if VIEW_MODE=="setting"#]class="active"[#endif#]><a href="?view_mode=setting"><#LANG_ASETTINGS#></a></li>
+ <li [#if VIEW_MODE=="search_app_asterisk" || VIEW_MODE==""#]class="active"[#endif#]><a href="?view_mode=search_app_asterisk"><#LANG_SECTION_SETTINGS#></a></li>
+ <li [#if VIEW_MODE=="search_cdr"#]class="active"[#endif#]><a href="?view_mode=search_cdr"><#LANG_ARECORDS#></a></li>
  <li [#if VIEW_MODE=="help"#]class="active"[#endif#]><a href="?view_mode=help"><#LANG_AHELP#></a></li>
 </ul><br>
 
-[#if VIEW_MODE=""#]
-        [#inc action_usual.html#]
-[#endif VIEW_MODE#]
+ <!-- table app_asterisk search -->
+ [#if VIEW_MODE="search_app_asterisk" || VIEW_MODE=""#]
+<div>
+[ <a href="#" onClick="$('#api_settings').toggle();return false;"><#LANG_SETUP#> <#LANG_AHOST#></a> ]
+</div>
+<div style="display:none" id='api_settings'>
+<br>
+<#LANG_AHELPHOST#>
+<br>
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<fieldset>
+<div class="form-group">
+ <label class="control-label"[#if ERR_AHOST#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_AHOST#>:
+ </label>
+ <div class="controls"><input type="text" name="ahost" value="[#AHOST#]" class="input"></div>
+</div>
+<div class="form-group">
+ <label class="control-label"[#if ERR_ABASE#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_ABASE#>:
+ </label>
+ <div class="controls"><input type="text" name="abase" value="[#ABASE#]" class="input"></div>
+</div>
 
-[#if VIEW_MODE="setting"#]
-    [#inc action_settings.html#]
-[#endif VIEW_MODE#]
-
-
+<div class="form-group">
+ <label class="control-label"[#if ERR_AUSERNAME#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_AUSERNAME#>
+ </label>
+ <div class="controls"><input type="text" name="ausername" value="[#AUSERNAME#]" class="input"></div>
+</div>
+<div class="form-group">
+ <label class="control-label"[#if ERR_APASSWORD#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_APASSWORD#>:
+ </label>
+ <div class="controls"><input type="password" name="apassword" value="[#APASSWORD#]" class="input"></div>
+</div>
+<div class="form-actions">
+<button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
+<input type="hidden" name="view_mode" value="update_settings">
+<input type="hidden" name="mode" value="update">
+</div>
+</fieldset>
+</form>
+</div>
+  [#inc app_asterisk_search_admin.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table app_asterisk search -->
+ <!-- table app_asterisk edit -->
+ [#if VIEW_MODE="edit_app_asterisk"#]
+   [#inc app_asterisk_edit.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table app_asterisk edit -->
+ <!-- table app_asterisk view --> 
+ [#if VIEW_MODE="view_app_asterisk"#]
+   [#inc app_asterisk_view.html#]
+ [#endif VIEW_MODE#]
+ <!-- / table app_asterisk view -->
+ <!-- CDR VIEW -->
+[#if VIEW_MODE="search_cdr"#]
+   [#inc search_cdr.html#]
+ [#endif VIEW_MODE#]
+ <!-- / CDR VIEW -->
+ <!-- HELP view -->
 [#if VIEW_MODE="help"#]
-        [#inc help.html#]
-[#endif VIEW_MODE#]
+   [#inc help.html#]
+ [#endif VIEW_MODE#]
+ <!-- / HELP view -->
+

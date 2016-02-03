@@ -7,29 +7,32 @@
 $dictionary=array(
 
 /* general */
-'ATITLE'=>'Asterisk CDR',
 'ARECORDS'=>'Records',
-'ASETTINGS'=>'Settings',
 'AHELP'=>'Help',
 'ABOUT'=>'About',
 'AHOST'=>'Host',
 'APORT'=>'Port',
 'ABASE'=>'Base',
+'ATYPE'=>'Table type',
 'ATABLE'=>'Table',
 'AUSERNAME'=>'User',
 'APASSWORD'=>'Password',
 'ACLOSE'=>'Close',
+'ADD_CDR_TABLE'=>'Add CDR Table',
 'AUPDATE'=>'Update',
-'ADATE'=>'Date',
-'AFROM'=>'From',
-'ATO'=>'To',
+'ACALLDATE'=>'Date',
+'ASRC'=>'From',
+'ADST'=>'To',
 'ARECORD'=>'Call record',
 'AFILEDIR'=>'Directory',
+'AFILENAME'=>'File name',
 'ANORECORD'=>'No record',
 'ANORECORDS'=>'No records',
 'APAGES'=>'Pages',
 'ARECPERPAGE'=>'Records per page',
-'ADURATION'=>'Duration'
+'ADURATION'=>'Duration',
+'AHELPHOST'=>'Asterisk server and database settings.',
+'AHELPTABLE_CDR'=>'Settings Astersk CDR table column names (case sensitive). Path to call records files.'
 
 /* end module names */
 

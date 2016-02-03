@@ -7,29 +7,32 @@
 $dictionary=array(
 
 /* general */
-'ATITLE'=>'Asterisk звонки',
 'ARECORDS'=>'Записи',
-'ASETTINGS'=>'Настройки',
 'AHELP'=>'Помощь',
 'ABOUT'=>'О модуле',
 'AHOST'=>'Сервер',
 'APORT'=>'Порт',
 'ABASE'=>'База',
+'ATYPE'=>'Тип таблицы',
 'ATABLE'=>'Таблица',
 'AUSERNAME'=>'Пользователь',
 'APASSWORD'=>'Пароль',
 'ACLOSE'=>'Закрыть',
+'ADD_CDR_TABLE'=>'Добавить таблицу CDR',
 'AUPDATE'=>'Обновить',
-'ADATE'=>'Дата',
-'AFROM'=>'С',
-'ATO'=>'На',
+'ACALLDATE'=>'Дата',
+'ASRC'=>'С',
+'ADST'=>'На',
 'ARECORD'=>'Запись разговора',
 'AFILEDIR'=>'Путь',
+'AFILENAME'=>'Имя файла',
 'ANORECORD'=>'Записи нет',
 'ANORECORDS'=>'Записей нет',
 'APAGES'=>'Cтраницы',
 'ARECPERPAGE'=>'Записей на странице',
-'ADURATION'=>'Длительность'
+'ADURATION'=>'Длительность',
+'AHELPHOST'=>'Настройки сервера и базы данных Asterisk.',
+'AHELPTABLE_CDR'=>'Настройки наименования колонок таблицы записей разговоров (чувствительны к регистру). Путь к файлам записей разговоров.'
 /* end module names */
 
 
