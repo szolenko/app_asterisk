@@ -111,51 +111,52 @@ function run() {
 * @access public
 */
 function admin(&$out) {
- $this->getConfig();
- $out['AHOST']=$this->config['AHOST'];
- if (!$out['AHOST']) {
-  $out['AHOST']='localhost';
- }
- $out['ABASE']=$this->config['ABASE'];
- if (!$out['ABASE']) {
-  $out['ABASE']='asterisk';
- }
- $out['AUSERNAME']=$this->config['AUSERNAME'];
- if (!$out['AUSERNAME']) {
-  $out['AUSERNAME']='root';
- }
- $out['APASSWORD']=$this->config['APASSWORD'];
+$this->getConfig();
+$out['AHOST']=$this->config['AHOST'];
+	if (!$out['AHOST']) {
+		$out['AHOST']='localhost';
+	}	
+$out['ABASE']=$this->config['ABASE'];
+if (!$out['ABASE']) {
+	$out['ABASE']='asterisk';
+}
+$out['AUSERNAME']=$this->config['AUSERNAME'];
+if (!$out['AUSERNAME']) {
+	$out['AUSERNAME']='root';
+}
+$out['APASSWORD']=$this->config['APASSWORD'];
 
- if ($this->view_mode=='update_settings') {
-   global $ahost;
-   $this->config['AHOST']=$ahost;
-   global $abase;
-   $this->config['ABASE']=$abase;
-   global $ausername;
-   $this->config['AUSERNAME']=$ausername;
-   global $apassword;
-   $this->config['APASSWORD']=$apassword;
-   $this->saveConfig();
-   $this->redirect("?");
- }
- if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
-  $out['SET_DATASOURCE']=1;
- }
- if ($this->data_source=='app_asterisk' || $this->data_source=='') {
-  if ($this->view_mode=='' || $this->view_mode=='search_app_asterisk') {
-   $this->search_app_asterisk($out);
+if ($this->view_mode=='update_settings') {
+	global $ahost;
+	$this->config['AHOST']=$ahost;
+	global $abase;
+	$this->config['ABASE']=$abase;
+	global $ausername;
+	$this->config['AUSERNAME']=$ausername;
+	global $apassword;
+	$this->config['APASSWORD']=$apassword;
+	$this->saveConfig();
+	$this->redirect("?");
+}
+if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
+	$out['SET_DATASOURCE']=1;
+}
+  if ($this->data_source=='app_asterisk' || $this->data_source=='') {
+	if ($this->view_mode=='' || $this->view_mode=='search_app_asterisk') {
+		$this->search_app_asterisk($out);
+	}
+	if ($this->view_mode=='edit_app_asterisk') {
+		$this->edit_app_asterisk($out, $this->id);
+	}
+	if ($this->view_mode=='delete_app_asterisk') {
+		$this->delete_app_asterisk($this->id);
+		$this->redirect("?");
+	}
+	if ($this->view_mode=='search_cdr') {
+		$this->search_cdr($out);
+	}
   }
-  if ($this->view_mode=='edit_app_asterisk') {
-   $this->edit_app_asterisk($out, $this->id);
-  }
-  if ($this->view_mode=='delete_app_asterisk') {
-   $this->delete_app_asterisk($this->id);
-   $this->redirect("?");
-  }
-  if ($this->view_mode=='search_cdr') {
-   $this->search_cdr($out, $this->id);
-  }
- }
+
 }
 /**
 * FrontEnd
@@ -165,8 +166,9 @@ function admin(&$out) {
 * @access public
 */
 function usual(&$out) {
- $this->admin($out);
+  $this->admin($out);
 }
+
 /**
 * app_asterisk search
 *

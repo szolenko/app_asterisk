@@ -2,7 +2,7 @@
 /*
 * @version 0.1
 */
-require ("app_asterisk_search.inc.php");
+require_once ("app_asterisk_search.inc.php");
 
 $db_host = $this->config['AHOST'];
 $db_name = $this->config['ABASE'];
@@ -20,77 +20,102 @@ global $session;
  if ($this->owner->name=='panel') {
      $out['CONTROLPANEL']=1;
   }
-  $qry_cdr="1";
 
   // search filters
   //searching 'CALLDATE' (datetime)
-  global $calldate;
-  if ($calldate!='') {
-    $qry_cdr.=" AND ".$col_calldate." LIKE '%".DBSafe($calldate)."%'";
-    $out['calldate']=$calldate;
+  global $CALLDATE;
+  if ($CALLDATE!='') {
+    $qry_cdr.=" AND ".$col_calldate." LIKE '%".DBSafe($CALLDATE)."%'";
+    $out['CALLDATE']=$CALLDATE;
   }
 
   //searching 'SRC' (varchar)
-  global $src;
-  if ($src!='') {
-   $qry_cdr.=" AND ".$col_src." LIKE '%".DBSafe($src)."%'";
-   $out['src']=$src;
-  }
+  global $SRC;
+  if ($SRC!='') {
+   $qry_cdr.=" AND ".$col_src." LIKE '%".DBSafe($SRC)."%'";
+   $this->out['SRC']=$SRC;
+  };
 
   //searching 'DST' (varchar)
-  global $dst;
-  if ($dst!='') {
-   $qry_cdr.=" AND ".$col_dst." LIKE '%".DBSafe($dst)."%'";
-   $out['dst']=$dst;
+  global $DST;
+  if ($DST!='') {
+   $qry_cdr.=" AND ".$col_dst." LIKE '%".DBSafe($DST)."%'";
+   $out['DST']=$DST;
   }
 
   //searching 'DURATION' (varchar)
-  global $duration;
-  if ($duration!='') {
-   $qry_cdr.=" AND ".$col_duration." >= '%".DBSafe($duration)."%'";
-   $out['duration']=$duration;
+  global $DURATION;
+  if ($DURATION!='') {
+   $qry_cdr.=" AND ".$col_duration." >= ".DBSafe($DURATION);
+   $out['DURATION']=$DURATION;
   }
 
 
   //searching 'RECPERPAGE' (varchar)
-  global $recperpage;
-  if ($recperpage!='') {
-   $out['RECPERPAGE']=$recperpage;
+  global $RECPERPAGE;
+  if ($RECPERPAGE!='') {
+   $out['RECPERPAGE'] = $RECPERPAGE;
  }
 
-  global $save_qry;
+ global $save_qry;
   if ($save_qry) {
-    $qry_cdr=$session->data['asrerisk_qry'];
+    $qry_cdr = $session->data['cdr_qry'];
   } else {
-    $session->data['asterisk_qry']=$qry_cdr;
+    $session->data['cdr_qry'] = $qry_cdr;
   }
-  if (!$qry_cdr) $qry_cdr="1";
+  if (!$qry_cdr) $qry_cdr = "";
 
 //FIELDS ORDER
 
- global $sortby_asterisk;
-  if (!$sortby_asterisk) {
-   $sortby_asterisk=$session->data['asterisk_sort'];
+global $sortby_cdr;
+if (!$sortby_cdr) {
+  $sortby_cdr = $col_calldate." DESC";
   } else {
-   if ($session->data['asterisk_sort']==$sortby_asterisk) {
-    if (Is_Integer(strpos($sortby_asterisk, ' DESC'))) {
-     $sortby_asterisk=str_replace(' DESC', '', $sortby_asterisk);
-    } else {
-     $sortby_asterisk=$sortby_asterisk." DESC";
-    }
-   }
-   $session->data['asterisk_sort']=$sortby_asterisk;
-  }
-  $sortby_asterisk=$col_calldate." DESC";
-  $out['SORTBY']=$sortby_asterisk;
-
+	if ($session->data['sortby_cdr']=='CALLDATE') {
+		if (Is_Integer(strpos($sortby_cdr, ' DESC'))) {
+			$sortby_cdr=$col_calldate;
+			$out['SORTBY']='CALLDATE';
+		} else {
+			$sortby_cdr=$col_calldate." DESC";
+			$out['SORTBY']='CALLDATE DESC';
+		}
+	}
+       if ($session->data['sortby_cdr']=='SRC') {
+                if (Is_Integer(strpos($sortby_cdr, ' DESC'))) {
+                        $sortby_cdr=$col_src;
+			$out['SORTBY']='SRC';
+                } else {
+                        $sortby_cdr=$col_src." DESC";
+			$out['SORTBY']='SRC DESC';
+                }
+        }
+       if ($session->data['sortby_cdr']=='DST') {
+                if (Is_Integer(strpos($sortby_cdr, ' DESC'))) {
+                        $sortby_cdr=$col_dst;
+			$out['SORTBY']='DST';
+                } else {
+                        $sortby_cdr=$col_dst." DESC";
+			$out['SORTBY']='DST DESC';
+                }
+        }
+       if ($session->data['sortby_cdr']=='DURATION') {
+                if (Is_Integer(strpos($sortby_cdr, ' DESC'))) {
+                        $sortby_cdr=$col_duration;
+			$out['SORTBY']='DURATION';
+                } else {
+                        $sortby_cdr=$col_duration." DESC";
+			$out['SORTBY']='DURATION DESC';
+		}
+	}
+ $session->data['sortby_cdr']=$sortby_cdr;
+};
 
 //SEARCH RESULT
 $ast_db = mysql_connect($db_host, $db_username, $db_password)
     or die("Could not connect: " . mysql_error());
 mysql_select_db($db_name, $ast_db)
     or die("Could not select DB: " . mysql_error());
-$qry = mysql_query("SELECT * FROM ".$db_table." WHERE ".$qry_cdr." ORDER BY ".$sortby_asterisk)
+$qry = mysql_query("SELECT * FROM ".$db_table." WHERE 1 ".$qry_cdr." ORDER BY ".$sortby_cdr)
     or die(mysql_error());
 
 while ($res_cdr[] = mysql_fetch_array($qry,MYSQL_ASSOC)) {
@@ -103,13 +128,13 @@ for ($i=0;$i<$total;$i++){
 	$out['ARECORDS'][$i]['SRC'] = $out['ARECORDS'][$i][$col_src];
 	$out['ARECORDS'][$i]['DST'] = $out['ARECORDS'][$i][$col_dst];
 	$out['ARECORDS'][$i]['DURATION'] = $out['ARECORDS'][$i][$col_duration];
-	$out['ARECORDS'][$i]['FILEDIR'] = $out['ARECORDS'][$i][$col_filedir];
+	$out['ARECORDS'][$i]['FILEDIR'] = $col_filedir;
 	$out['ARECORDS'][$i]['FILENAME'] = $out['ARECORDS'][$i][$col_filename];
 };
 
 // PAGING 
  if ($out['ARECORDS'][0]['CALLDATE']){
-    paging($out['ARECORDS'], $recperpage, $out); // search result paging
+    paging($out['ARECORDS'], $RECPERPAGE, $out); // search result paging
     $total=count($out['ARECORDS']);
 };
 
