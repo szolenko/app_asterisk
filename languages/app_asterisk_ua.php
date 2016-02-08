@@ -13,7 +13,6 @@ $dictionary=array(
 'AHOST'=>'Сервер',
 'APORT'=>'Порт',
 'ABASE'=>'База',
-'ATYPE'=>'Тип таблиці',
 'ATABLE'=>'Таблиця',
 'AUSERNAME'=>'Користувач',
 'APASSWORD'=>'Пароль',
@@ -32,6 +31,7 @@ $dictionary=array(
 'ARECPERPAGE'=>'Записів на сторінці',
 'ADURATION'=>'Тривалість',
 'AHELPHOST'=>'Налаштування серверу та бази даних Asterisk.',
+'AHELPTABLES_CDR'=>'Приєднані таблиці записів розмов серверу Asterisk.',
 'AHELPTABLE_CDR'=>'Налаштування найменувань стовбців таблиці записів розмов (чутливі до регістру). Шлях до файлів записів розмов.'
 
 /* end module names */

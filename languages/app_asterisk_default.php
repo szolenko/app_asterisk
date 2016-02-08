@@ -13,7 +13,6 @@ $dictionary=array(
 'AHOST'=>'Host',
 'APORT'=>'Port',
 'ABASE'=>'Base',
-'ATYPE'=>'Table type',
 'ATABLE'=>'Table',
 'AUSERNAME'=>'User',
 'APASSWORD'=>'Password',
@@ -32,6 +31,7 @@ $dictionary=array(
 'ARECPERPAGE'=>'Records per page',
 'ADURATION'=>'Duration',
 'AHELPHOST'=>'Asterisk server and database settings.',
+'AHELPTABLES_CDR'=>'Connected CDR server Asterisk tables.',
 'AHELPTABLE_CDR'=>'Settings Astersk CDR table column names (case sensitive). Path to call records files.'
 
 /* end module names */

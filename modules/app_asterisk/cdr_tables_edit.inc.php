@@ -5,18 +5,11 @@
   if ($this->owner->name=='panel') {
    $out['CONTROLPANEL']=1;
   }
-  $table_name='app_asterisk';
+  $table_name='app_asterisk_t_cdr';
   $rec=SQLSelectOne("SELECT * FROM $table_name WHERE ID='$id'");
   if ($this->mode=='update') {
    $ok=1;
 
-  //updating 'type' (varchar)
-   global $type;
-   $rec['TYPE']=$type;
-   if ($rec['TYPE']=='') {
-    $out['ERR_TYPE']=1;
-    $ok=0;
-   }
   //updating 'table' (varchar)
    global $table;
    $rec['TABLE']=$table;

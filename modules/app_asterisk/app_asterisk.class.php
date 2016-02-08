@@ -3,7 +3,7 @@
 * Asterisk 
 * @package project
 * @author Sergii Zolenko <szolenko@gmail.com>
-* @version 0.1 (Feb 01, 2016)
+* @version 0.1 beta (Feb 08, 2016)
 */
 //
 //
@@ -33,6 +33,9 @@ function saveParams($data=0) {
  if (IsSet($this->id)) {
   $p["id"]=$this->id;
  }
+ if (IsSet($this->data_source)) {
+  $p["data_source"]=$this->data_source;
+ }
  if (IsSet($this->view_mode)) {
   $p["view_mode"]=$this->view_mode;
  }
@@ -54,6 +57,7 @@ function saveParams($data=0) {
 function getParams() {
   global $id;
   global $mode;
+  global $data_source;
   global $view_mode;
   global $edit_mode;
   global $tab;
@@ -62,6 +66,9 @@ function getParams() {
   }
   if (isset($mode)) {
    $this->mode=$mode;
+  }
+  if (isset($data_source)) {
+   $this->data_source=$data_source;
   }
   if (isset($view_mode)) {
    $this->view_mode=$view_mode;
@@ -94,6 +101,7 @@ function run() {
   if (IsSet($this->owner->name)) {
    $out['PARENT_NAME']=$this->owner->name;
   }
+  $out['DATA_SOURCE']=$this->data_source;
   $out['VIEW_MODE']=$this->view_mode;
   $out['EDIT_MODE']=$this->edit_mode;
   $out['MODE']=$this->mode;
@@ -142,19 +150,22 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 	$out['SET_DATASOURCE']=1;
 }
   if ($this->data_source=='app_asterisk' || $this->data_source=='') {
-	if ($this->view_mode=='' || $this->view_mode=='search_app_asterisk') {
-		$this->search_app_asterisk($out);
+	if ($this->view_mode=='' || $this->view_mode=='search_cdr_tables') {
+		$this->search_cdr_tables($out);
 	}
-	if ($this->view_mode=='edit_app_asterisk') {
-		$this->edit_app_asterisk($out, $this->id);
+	if ($this->view_mode=='edit_cdr_tables') {
+		$this->edit_cdr_tables($out, $this->id);
 	}
-	if ($this->view_mode=='delete_app_asterisk') {
-		$this->delete_app_asterisk($this->id);
+	if ($this->view_mode=='delete_cdr_tables') {
+		$this->delete_cdr_tables($this->id);
 		$this->redirect("?");
 	}
-	if ($this->view_mode=='search_cdr') {
-		$this->search_cdr($out);
-	}
+  }
+
+  if ($this->data_source=='cdr_asterisk') {
+        if ($this->view_mode=='' || $this->view_mode=='cdr_search') {
+                $this->cdr_search($out);
+        }
   }
 
 }
@@ -167,6 +178,15 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 */
 function usual(&$out) {
   $this->admin($out);
+if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
+	$out['SET_DATASOURCE']=1;
+}
+  if ($this->data_source=='cdr_asterisk' || $this->data_source=='') {
+        if ($this->view_mode=='' || $this->view_mode=='cdr_search') {
+                $this->cdr_search($out);
+        }
+  }
+
 }
 
 /**
@@ -174,33 +194,33 @@ function usual(&$out) {
 *
 * @access public
 */
- function search_app_asterisk(&$out) {
-  require(DIR_MODULES.$this->name.'/app_asterisk_search.inc.php');
+ function search_cdr_tables(&$out) {
+  require(DIR_MODULES.$this->name.'/cdr_tables_search.inc.php');
  }
 /**
 * app_asterisk edit/add
 *
 * @access public
 */
- function edit_app_asterisk(&$out, $id) {
-  require(DIR_MODULES.$this->name.'/app_asterisk_edit.inc.php');
+ function edit_cdr_tables(&$out, $id) {
+  require(DIR_MODULES.$this->name.'/cdr_tables_edit.inc.php');
  }
 /**
 * app_asterisk delete record
 *
 * @access public
 */
- function delete_app_asterisk($id) {
-  $rec=SQLSelectOne("SELECT * FROM app_asterisk WHERE ID='$id'");
+ function delete_cdr_tables($id) {
+  $rec=SQLSelectOne("SELECT * FROM app_asterisk_t_cdr WHERE ID='$id'");
   // some action for related tables
-  SQLExec("DELETE FROM app_asterisk WHERE ID='".$rec['ID']."'");
+  SQLExec("DELETE FROM app_asterisk_t_cdr WHERE ID='".$rec['ID']."'");
  }
 /**
 * cdr search
 *
 * @access public
 */
- function search_cdr(&$out) {
+ function cdr_search(&$out) {
   require(DIR_MODULES.$this->name.'/cdr_search.inc.php');
  }
 
@@ -222,7 +242,7 @@ function usual(&$out) {
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS app_asterisk');
+  SQLExec('DROP TABLE IF EXISTS app_asterisk_t_cdr');
   parent::uninstall();
  }
 /**
@@ -237,15 +257,14 @@ function usual(&$out) {
 app_asterisk - 
 */
   $data = <<<EOD
- app_asterisk: ID int(10) unsigned NOT NULL auto_increment
- app_asterisk: TYPE varchar(255) NOT NULL DEFAULT ''
- app_asterisk: TABLE varchar(255) NOT NULL DEFAULT ''
- app_asterisk: CALLDATE varchar(255) NOT NULL DEFAULT ''
- app_asterisk: SRC varchar(255) NOT NULL DEFAULT ''
- app_asterisk: DST varchar(255) NOT NULL DEFAULT ''
- app_asterisk: DURATION varchar(255) NOT NULL DEFAULT ''
- app_asterisk: FILEDIR varchar(255) NOT NULL DEFAULT ''
- app_asterisk: FILENAME varchar(255) NOT NULL DEFAULT ''
+ app_asterisk_t_cdr: ID int(10) unsigned NOT NULL auto_increment
+ app_asterisk_t_cdr: TABLE varchar(255) NOT NULL DEFAULT ''
+ app_asterisk_t_cdr: CALLDATE varchar(255) NOT NULL DEFAULT ''
+ app_asterisk_t_cdr: SRC varchar(255) NOT NULL DEFAULT ''
+ app_asterisk_t_cdr: DST varchar(255) NOT NULL DEFAULT ''
+ app_asterisk_t_cdr: DURATION varchar(255) NOT NULL DEFAULT ''
+ app_asterisk_t_cdr: FILEDIR varchar(255) NOT NULL DEFAULT ''
+ app_asterisk_t_cdr: FILENAME varchar(255) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);
  }

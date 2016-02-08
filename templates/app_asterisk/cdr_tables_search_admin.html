@@ -1,14 +1,14 @@
 
-<!-- table app_asterisk search -->
+<!-- table cdr_tables search -->
 <br>
-<#LANG_AHELPTABLE_CDR#>
+<#LANG_AHELPTABLES_CDR#>
 <p>
-<a href="?view_mode=edit_app_asterisk" class="btn btn-default"> <#LANG_ADD#></a>
+<a href="?view_mode=edit_cdr_tables" class="btn btn-default"> <#LANG_ADD#></a>
 </p>
 <table width=100% border=0><tr>
 <td valign=top>
 <!-- results -->
-[#if RESULT#]
+[#if TABLES#]
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_app_asterisk" style="padding:0px" class="form">
 <table  align=center class="table table-striped">
@@ -25,10 +25,9 @@
 </tr>
 </thead>
 <tbody>
-[#begin RESULT#]
+[#begin TABLES#]
 <tr style="height:52px" class="hover_btn2">
- <td style="vertical-align:middle"><b>[#if TYPE!=""#][#TYPE#][#else#]&nbsp;[#endif#]</a></b></td>
- <td style="vertical-align:middle">[#if TABLE!=""#][#TABLE#][#else#]&nbsp;[#endif#]</a></td>
+ <td style="vertical-align:middle"><b>[#if TABLE!=""#][#TABLE#][#else#]&nbsp;[#endif#]<b></td>
  <td style="vertical-align:middle">[#if CALLDATE!=""#][#CALLDATE#][#else#]&nbsp;[#endif#]</td>
  <td style="vertical-align:middle">[#if SRC!=""#][#SRC#][#else#]&nbsp;[#endif#]</td>
  <td style="vertical-align:middle">[#if DST!=""#][#DST#][#else#]&nbsp;[#endif#]</td>
@@ -38,23 +37,23 @@
  <td style="vertical-align:middle" width="1%" nowrap>
   <div style="width:120px">
   [#if "<#ACTION#>"=="admin"#]
-   <a href="?view_mode=edit_app_asterisk&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-    <a href="?view_mode=delete_app_asterisk&id=[#ID#]" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
+   <a href="?view_mode=edit_cdr_tables&id=[#ID#]" class="btn btn-default" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a href="?view_mode=delete_cdr_tables&id=[#ID#]" onClick="return confirm('Are you sure? Please confirm.')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
   [#endif ACTION#]
   </div>
  </td>
 </tr>
-[#end RESULT#]
+[#end TABLES#]
 </tbody>
 </table>
 <input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
 <input type="hidden" name="view_mode" value="multiple_app_asterisk">
 </form>
 <!-- / search results (list) -->
-[#else RESULT#]
+[#else TABLES#]
 <p>
 <font color="red"><#LANG_NO_RECORDS_FOUND#></font>
 </p>
-[#endif RESULT#]
+[#endif TABLES#]
 <!-- / results -->
 </td></tr></table>

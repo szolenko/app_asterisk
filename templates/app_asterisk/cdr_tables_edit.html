@@ -1,5 +1,5 @@
 
-<!-- Table 'app_asterisk' edit -->
+<!-- Table 'cdr_tables' edit -->
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 [#if OK#]
 <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
@@ -12,21 +12,6 @@
 <legend><#LANG_NEW_RECORD#></legend>
 [#endif ID#]
 <#LANG_AHELPTABLE_CDR#><br>
-<!-- TYPE (varchar) -->
-<div class="form-group">
- <label class="col-lg-3 control-label"[#if ERR_TYPE#] style="color:red;font-weight:bold"[#endif#]>
- <#LANG_ATYPE#>:
- </label>
-<!-- <div class="col-lg-4"><input type="text" class="form-control" name="type" value="[#TYPE#]" id="type"></div> -->
- <div class="col-lg-4"><select name="type" style="color:black">
-	<option selected value="<#TYPE#>"><#TYPE#></option>
-	<option disabled value=""></option>
-        <option value="CDR">CDR</option>
-        <option value="ANSWER">TEST</option>
-    </select>
- </div>
-</div>
-
 <!-- TABLE (varchar) -->
 <div class="form-group">
  <label class="col-lg-3 control-label"[#if ERR_TABLE#] style="color:red;font-weight:bold"[#endif#]>
