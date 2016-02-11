@@ -134,6 +134,9 @@ if (!$out['AUSERNAME']) {
 }
 $out['APASSWORD']=$this->config['APASSWORD'];
 
+$out['TABLE_CDR']=$this->config['TABLE_CDR'];
+$out['FILEDIR_CDR']=$this->config['FILEDIR_CDR'];
+
 if ($this->view_mode=='update_settings') {
 	global $ahost;
 	$this->config['AHOST']=$ahost;
@@ -143,6 +146,10 @@ if ($this->view_mode=='update_settings') {
 	$this->config['AUSERNAME']=$ausername;
 	global $apassword;
 	$this->config['APASSWORD']=$apassword;
+        global $table_cdr;
+        $this->config['TABLE_CDR']=$table_cdr;
+        global $filedir_cdr;
+        $this->config['FILEDIR_CDR']=$filedir_cdr;
 	$this->saveConfig();
 	$this->redirect("?");
 }
@@ -150,8 +157,8 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 	$out['SET_DATASOURCE']=1;
 }
   if ($this->data_source=='app_asterisk' || $this->data_source=='') {
-	if ($this->view_mode=='' || $this->view_mode=='search_cdr_tables') {
-		$this->search_cdr_tables($out);
+	if ($this->view_mode=='' || $this->view_mode=='app_asterisk_admin') {
+		$this->app_asterisk_admin($out);
 	}
 	if ($this->view_mode=='edit_cdr_tables') {
 		$this->edit_cdr_tables($out, $this->id);
@@ -162,11 +169,14 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 	}
   }
 
-  if ($this->data_source=='cdr_asterisk') {
+if ($this->data_source=='cdr_asterisk') {
         if ($this->view_mode=='' || $this->view_mode=='cdr_search') {
                 $this->cdr_search($out);
+        		if ($this->mode=='cdr_delete') {
+                	$this->cdr_search($out);
+        		}
         }
-  }
+}
 
 }
 /**
@@ -190,11 +200,11 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 }
 
 /**
-* app_asterisk search
+* app_asterisk admin
 *
 * @access public
 */
- function search_cdr_tables(&$out) {
+ function app_asterisk_admin(&$out) {
   require(DIR_MODULES.$this->name.'/cdr_tables_search.inc.php');
  }
 /**

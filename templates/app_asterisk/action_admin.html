@@ -1,16 +1,13 @@
  <!-- action admin -->
 <ul class="nav nav-tabs">
- <li [#if VIEW_MODE=="search_cdr_tables" || VIEW_MODE==""#]class="active"[#endif#]><a href="?data_source=app_asterisk&view_mode=search_cdr_tables"><#LANG_SECTION_SETTINGS#></a></li>
+ <li [#if VIEW_MODE=="app_asterisk_admin" || VIEW_MODE==""#]class="active"[#endif#]><a href="?data_source=app_asterisk&view_mode=app_asterisk_admin"><#LANG_SECTION_SETTINGS#></a></li>
  <li [#if VIEW_MODE=="cdr_search"#]class="active"[#endif#]><a href="?data_source=cdr_asterisk&view_mode=cdr_search"><#LANG_ARECORDS#></a></li>
  <li [#if VIEW_MODE=="help"#]class="active"[#endif#]><a href="?view_mode=help"><#LANG_AHELP#></a></li>
 </ul><br>
 
- <!-- table cdr_tables search -->
- [#if VIEW_MODE="search_cdr_tables" || VIEW_MODE=""#]
-<div>
-[ <a href="#" onClick="$('#api_settings').toggle();return false;"><#LANG_SETUP#> <#LANG_AHOST#></a> ]
-</div>
-<div style="display:none" id='api_settings'>
+ <!-- ADMIN  -->
+ [#if VIEW_MODE="app_asterisk_admin" || VIEW_MODE=""#]
+<div id='api_settings'>
 <br>
 <#LANG_AHELPHOST#>
 <br>
@@ -28,7 +25,6 @@
  </label>
  <div class="controls"><input type="text" name="abase" value="[#ABASE#]" class="input"></div>
 </div>
-
 <div class="form-group">
  <label class="control-label"[#if ERR_AUSERNAME#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_AUSERNAME#>
@@ -41,6 +37,26 @@
  </label>
  <div class="controls"><input type="password" name="apassword" value="[#APASSWORD#]" class="input"></div>
 </div>
+<table>
+	<tr>
+		<td>
+		<div class="form-group">
+		  <label class="control-label"[#if ERR_TABLE_CDR#] style="color:red;font-weight:bold"[#endif#]>
+		  <#LANG_ATABLE_CDR#>:
+		  </label>
+		  <div class="controls"><input type="text" name="table_cdr" value="[#TABLE_CDR#]" class="input"></div>
+		  </div>
+		</td>
+		<td>
+		  <div class="form-group">
+		  <label class="control-label"[#if ERR_FILEDIR_CDR#] style="color:red;font-weight:bold"[#endif#]>
+		  <#LANG_AFILEDIR_CDR#>:
+		  </label>
+		  <div class="controls"><input type="text" name="filedir_cdr" value="[#FILEDIR_CDR#]" class="input"></div>
+		  </div>
+		</td>
+  </tr>
+</table>
 <div class="form-actions">
 <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
 <input type="hidden" name="view_mode" value="update_settings">
@@ -49,24 +65,15 @@
 </fieldset>
 </form>
 </div>
-  [#inc cdr_tables_search_admin.html#]
  [#endif VIEW_MODE#]
- <!-- / table cdr_tables search -->
- <!-- table cdr_tables edit -->
- [#if VIEW_MODE="edit_cdr_tables"#]
-   [#inc cdr_tables_edit.html#]
- [#endif VIEW_MODE#]
- <!-- / table cdr_tables edit -->
- <!-- table cdr_tables view --> 
- [#if VIEW_MODE="view_cdr_tables"#]
-   [#inc cdr_tables_view.html#]
- [#endif VIEW_MODE#]
- <!-- / table cdr_tables view -->
+ <!-- / ADMIN -->
+
  <!-- CDR VIEW -->
 [#if VIEW_MODE="cdr_search"#]
-   [#inc action_usual.html#]
+   [#inc cdr_search.html#]
  [#endif VIEW_MODE#]
  <!-- / CDR VIEW -->
+
  <!-- HELP view -->
 [#if VIEW_MODE="help"#]
    [#inc help.html#]

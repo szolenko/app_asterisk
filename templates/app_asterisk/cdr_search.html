@@ -5,20 +5,20 @@
 </tr>
 <form action="?" method="post" name="cdr_search">
  <tr>
-  <td align=left><#LANG_ACALLDATE#>:&nbsp;<input type="date" name="CALLDATE" value="[#CALLDATE#]"></td>
+  <td align=left><#LANG_ACALLDATE#>:&nbsp;<input type="date" name="calldate" value="[#CALLDATE#]"></td>
  </tr>
  <tr>
-  <td align=left><#LANG_ASRC#>:&nbsp;<input type="text" name="SRC" value="[#SRC#]"></td>
-  <td align=left><#LANG_ADST#>:&nbsp;<input type="text" name="DST" value="[#DST#]"></td>
+  <td align=left><#LANG_ASRC#>:&nbsp;<input type="text" name="src" value="[#SRC#]"></td>
+  <td align=left><#LANG_ADST#>:&nbsp;<input type="text" name="dst" value="[#DST#]"></td>
  </tr>
  <tr>
-  <td align=left><#LANG_ADURATION#>:&nbsp;<input type="text" name="DURATION" value="[#DURATION#]"></td>
+  <td align=left><#LANG_ADURATION#>:&nbsp;<input type="text" name="duration" value="[#DURATION#]"></td>
  </tr>
 
  <tr>
     <td align=left><#LANG_ARECPERPAGE#>&nbsp;
-	<select name="RECPERPAGE" style="color:black">
-	<option selected value="[#RECPERPAGEe#]">[#RECPERPAGE#]</option>
+	<select name="recperpage" style="color:black">
+	<option selected value="[#RECPERPAGE#]">[#recperpage#]</option>
 	<option disabled value=""></option>
 	<option value="10">10</option>
 	<option value="20">20</option>
@@ -73,21 +73,21 @@
 <table  align=center class="table table-stripped">
 <thead>
 <tr>
-<th> <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&save_qry_cdr=1&sortby=CALLDATE"><#LANG_ACALLDATE#></a><nobr>
-    [#if SORTBY="CALLDATE"#](+)[#endif#]
-    [#if SORTBY="CALLDATE DESC"#](-)[#endif#]</nobr>
+<th> <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&save_qry_cdr=1&sortby_cdr=calldate"><#LANG_ACALLDATE#></a><nobr>
+    [#if SORTBY_CDR="calldate"#](+)[#endif#]
+    [#if SORTBY_CDR="calldate DESC"#](-)[#endif#]</nobr>
 </th>
-<th> <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&save_qry_cdr=1&sortby=SRC"><#LANG_ASRC#></a><nobr>
-    [#if SORTBY="SRC"#](+)[#endif#]
-    [#if SORTBY="SRC DESC"#](-)[#endif#]</nobr>
+<th> <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&save_qry_cdr=1&sortby_cdr=src"><#LANG_ASRC#></a><nobr>
+    [#if SORTBY_CDR="src"#](+)[#endif#]
+    [#if SORTBY_CDR="src DESC"#](-)[#endif#]</nobr>
 </th>
-<th> <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&save_qry_cdr=1&sortby=DST"><#LANG_ADST#></a><nobr>
-    [#if SORTBY="DST"#](+)[#endif#]
-    [#if SORTBY="DST DESC"#](-)[#endif#]</nobr>
+<th> <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&save_qry_cdr=1&sortby_cdr=dst"><#LANG_ADST#></a><nobr>
+    [#if SORTBY_CDR="dst"#](+)[#endif#]
+    [#if SORTBY_CDR="dst DESC"#](-)[#endif#]</nobr>
 </th>
-<th> <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&save_qry_cdr=1&sortby=DURATION"><#LANG_ADURATION#></a><nobr>
-    [#if SORTBY="DURATION"#](+)[#endif#]
-    [#if SORTBY="DURATION DESC"#](-)[#endif#]</nobr>
+<th> <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&save_qry_cdr=1&sortby_cdr=duration"><#LANG_ADURATION#></a><nobr>
+    [#if SORTBY_CDR="duration"#](+)[#endif#]
+    [#if SORTBY_CDR="duration DESC"#](-)[#endif#]</nobr>
 </th>
 <th><#LANG_ARECORD#></th>
 </tr>
@@ -95,15 +95,20 @@
 <tbody>
 [#begin CDRRECORDS#]
     <tr>
-        <td width="30%">[#CALLDATE#]</td>
-        <td width="20%">[#SRC#]</td>
-        <td width="20%">[#DST#]</td>
-        <td width="10%">[#DURATION#]</td>
-	[#if FILENAME="none"#]
+        <td width="30%">[#calldate#]</td>
+        <td width="20%">[#src#]</td>
+        <td width="20%">[#dst#]</td>
+        <td width="5%">[#duration#]</td>
+	[#if filename="none"#]
 	    <td width="20%"><#LANG_ANORECORD#></td>
 	[#else#]
-	    <td width="20%"><audio src="[#FILEDIR#]/[#FILENAME#]" controls></audio></td>
+	    <td width="20%"><audio src="<#FILEDIR_CDR#>/[#filename#]" controls></audio></td>
 	[#endif#]
+<td width="5%">
+  [#if "<#ACTION#>"=="admin"#]
+    <a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&save_qry_cdr=1&mode=cdr_delete&u_id=[#uniqueid#]" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')" class="btn btn-default" title="Delete"><i class="glyphicon glyphicon-remove"></i></a>
+  [#endif ACTION#]
+</td>
     </tr>
 [#end CDRRECORDS#]
 </tbody>

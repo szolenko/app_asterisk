@@ -14,6 +14,7 @@ $dictionary=array(
 'APORT'=>'Port',
 'ABASE'=>'Base',
 'ATABLE'=>'Table',
+'ATABLE_CDR'=>'CDR Table',
 'AUSERNAME'=>'User',
 'APASSWORD'=>'Password',
 'ACLOSE'=>'Close',
@@ -23,16 +24,16 @@ $dictionary=array(
 'ASRC'=>'From',
 'ADST'=>'To',
 'ARECORD'=>'Call record',
-'AFILEDIR'=>'Directory',
+'AFILEDIR_CDR'=>'CDR Directory',
 'AFILENAME'=>'File name',
 'ANORECORD'=>'No record',
 'ANORECORDS'=>'No records',
 'APAGES'=>'Pages',
 'ARECPERPAGE'=>'Records per page',
 'ADURATION'=>'Duration',
-'AHELPHOST'=>'Asterisk server and database settings.',
-'AHELPTABLES_CDR'=>'Connected CDR server Asterisk tables.',
-'AHELPTABLE_CDR'=>'Settings Astersk CDR table column names (case sensitive). Path to call records files.'
+'AHELPHOST'=>'Asterisk server and database settings',
+'AHELPTABLES_CDR'=>'Connected CDR server Asterisk table',
+'AHELPTABLE_CDR'=>'Settings Astersk CDR table column names (case sensitive). Path to call records files'
 
 /* end module names */
 
