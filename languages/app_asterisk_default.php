@@ -32,6 +32,7 @@ $dictionary=array(
 'ARECPERPAGE'=>'Records per page',
 'ADURATION'=>'Duration',
 'AHELPHOST'=>'Asterisk server and database settings',
+'AHELPAMI'=>'AMI settings',
 'AHELPTABLES_CDR'=>'Connected CDR server Asterisk table',
 'AHELPTABLE_CDR'=>'Settings Astersk CDR table column names (case sensitive). Path to call records files'
 

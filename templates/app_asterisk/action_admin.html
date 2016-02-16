@@ -2,17 +2,26 @@
 <ul class="nav nav-tabs">
  <li [#if VIEW_MODE=="app_asterisk_admin" || VIEW_MODE==""#]class="active"[#endif#]><a href="?data_source=app_asterisk&view_mode=app_asterisk_admin"><#LANG_SECTION_SETTINGS#></a></li>
  <li [#if VIEW_MODE=="cdr_search"#]class="active"[#endif#]><a href="?data_source=cdr_asterisk&view_mode=cdr_search"><#LANG_ARECORDS#></a></li>
+ <li [#if VIEW_MODE=="app_log_search"#]class="active"[#endif#]><a href="?data_source=app_asterisk&view_mode=app_log_search">Log</a></li>
  <li [#if VIEW_MODE=="help"#]class="active"[#endif#]><a href="?view_mode=help"><#LANG_AHELP#></a></li>
 </ul><br>
 
  <!-- ADMIN  -->
  [#if VIEW_MODE="app_asterisk_admin" || VIEW_MODE=""#]
 <div id='api_settings'>
-<br>
-<#LANG_AHELPHOST#>
-<br>
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <fieldset>
+<table align="center">
+<tr>
+<td align="right">
+<b><#LANG_AHELPHOST#></b>
+</td>
+<td align="right">
+<b><#LANG_AHELPAMI#></b>
+</td>
+</tr>
+<tr>
+<td>
 <div class="form-group">
  <label class="control-label"[#if ERR_AHOST#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_AHOST#>:
@@ -37,26 +46,56 @@
  </label>
  <div class="controls"><input type="password" name="apassword" value="[#APASSWORD#]" class="input"></div>
 </div>
+<td>
+
+<div class="form-group">
+ <label class="control-label"[#if ERR_AMIHOST#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_AHOST#>:
+ </label>
+ <div class="controls"><input type="text" name="amihost" value="[#AMIHOST#]" class="input"></div>
+</div>
+<div class="form-group">
+ <label class="control-label"[#if ERR_AMIPORT#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_APORT#>:
+ </label>
+ <div class="controls"><input type="text" name="amiport" value="[#AMIPORT#]" class="input"></div>
+</div>
+<div class="form-group">
+ <label class="control-label"[#if ERR_AMIUSERNAME#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_AUSERNAME#>
+ </label>
+ <div class="controls"><input type="text" name="amiusername" value="[#AMIUSERNAME#]" class="input"></div>
+</div>
+<div class="form-group">
+ <label class="control-label"[#if ERR_AMIPASSWORD#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_APASSWORD#>:
+ </label>
+ <div class="controls"><input type="password" name="amipassword" value="[#AMIPASSWORD#]" class="input"></div>
+</div>
+</td>
+</tr>
+</table>
 <table>
+    <div class="form-group">
 	<tr>
 		<td>
-		<div class="form-group">
 		  <label class="control-label"[#if ERR_TABLE_CDR#] style="color:red;font-weight:bold"[#endif#]>
 		  <#LANG_ATABLE_CDR#>:
 		  </label>
 		  <div class="controls"><input type="text" name="table_cdr" value="[#TABLE_CDR#]" class="input"></div>
-		  </div>
 		</td>
-		<td>
+		  </div>
 		  <div class="form-group">
+		<td>
 		  <label class="control-label"[#if ERR_FILEDIR_CDR#] style="color:red;font-weight:bold"[#endif#]>
 		  <#LANG_AFILEDIR_CDR#>:
 		  </label>
 		  <div class="controls"><input type="text" name="filedir_cdr" value="[#FILEDIR_CDR#]" class="input"></div>
-		  </div>
 		</td>
   </tr>
+		  </div>
 </table>
+<br>
 <div class="form-actions">
 <button type="submit" name="subm" value="Submit" class="btn btn-primary"><#LANG_UPDATE#></button>
 <input type="hidden" name="view_mode" value="update_settings">
@@ -73,6 +112,12 @@
    [#inc cdr_search.html#]
  [#endif VIEW_MODE#]
  <!-- / CDR VIEW -->
+
+ <!-- LOG view -->
+[#if VIEW_MODE="log_search"#]
+   [#inc log_search.html#]
+ [#endif VIEW_MODE#]
+ <!-- / LOG view -->
 
  <!-- HELP view -->
 [#if VIEW_MODE="help"#]

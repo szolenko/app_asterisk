@@ -120,6 +120,7 @@ function run() {
 */
 function admin(&$out) {
 $this->getConfig();
+//Database
 $out['AHOST']=$this->config['AHOST'];
 	if (!$out['AHOST']) {
 		$out['AHOST']='localhost';
@@ -133,6 +134,21 @@ if (!$out['AUSERNAME']) {
 	$out['AUSERNAME']='root';
 }
 $out['APASSWORD']=$this->config['APASSWORD'];
+// AMI
+$out['AMIHOST']=$this->config['AMIHOST'];
+	if (!$out['AMIHOST']) {
+		$out['AMIHOST']='127.0.0.1';
+	}	
+$out['AMIPORT']=$this->config['AMIPORT'];
+if (!$out['AMIPORT']) {
+	$out['AMIPORT']='5038';
+}
+$out['AMIUSERNAME']=$this->config['AMIUSERNAME'];
+if (!$out['AMIUSERNAME']) {
+	$out['AMIUSERNAME']='admin';
+}
+$out['AMIPASSWORD']=$this->config['AMIPASSWORD'];
+//TABLES
 
 $out['TABLE_CDR']=$this->config['TABLE_CDR'];
 $out['FILEDIR_CDR']=$this->config['FILEDIR_CDR'];
@@ -146,6 +162,14 @@ if ($this->view_mode=='update_settings') {
 	$this->config['AUSERNAME']=$ausername;
 	global $apassword;
 	$this->config['APASSWORD']=$apassword;
+	global $amihost;
+	$this->config['AMIHOST']=$amihost;
+	global $amiport;
+	$this->config['AMIPORT']=$amiport;
+	global $amiusername;
+	$this->config['AMIUSERNAME']=$amiusername;
+	global $amipassword;
+	$this->config['AMIPASSWORD']=$amipassword;
         global $table_cdr;
         $this->config['TABLE_CDR']=$table_cdr;
         global $filedir_cdr;
@@ -225,6 +249,7 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
   // some action for related tables
   SQLExec("DELETE FROM app_asterisk_t_cdr WHERE ID='".$rec['ID']."'");
  }
+
 /**
 * cdr search
 *
@@ -233,6 +258,22 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
  function cdr_search(&$out) {
   require(DIR_MODULES.$this->name.'/cdr_search.inc.php');
  }
+
+ function processSubscription($event, $details='') {
+ $this->getConfig();
+  if ($event=='SAY') {
+   $level=$details['level'];
+   $message=$details['message'];
+   //...
+  }
+ }
+ function processCycle() {
+ $this->getConfig();
+    include_once (DIR_MODULES.$this->name.'phpagi.php');
+  //to-do
+ }
+
+
 
 /**
 * Install
@@ -266,6 +307,7 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 /*
 app_asterisk - 
 */
+/*
   $data = <<<EOD
  app_asterisk_t_cdr: ID int(10) unsigned NOT NULL auto_increment
  app_asterisk_t_cdr: TABLE varchar(255) NOT NULL DEFAULT ''
@@ -277,6 +319,7 @@ app_asterisk -
  app_asterisk_t_cdr: FILENAME varchar(255) NOT NULL DEFAULT ''
 EOD;
   parent::dbInstall($data);
+*/
  }
 // --------------------------------------------------------------------
 }

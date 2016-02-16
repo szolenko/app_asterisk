@@ -96,9 +96,22 @@ $out['FILEDIR_CDR'] = $filedir_cdr;
 };
 
 // PAGING 
+
  if ($out['CDRRECORDS'][0]['calldate']){
    paging($out['CDRRECORDS'], $session->data['recperpage'], $out); // search result paging
 };
+
+global $page;
+if (!$page) {
+    $page = $this->session['NUM'];
+    $out['NUM'] = $page;
+  } else {
+    $this->session['NUM'] = $page;
+    $out['NUM'] = $page;
+}
+
+
+
 
 // DELETE CDR RECORD
 global $u_id;
