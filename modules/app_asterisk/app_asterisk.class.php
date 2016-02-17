@@ -3,7 +3,7 @@
 * Asterisk 
 * @package project
 * @author Sergii Zolenko <szolenko@gmail.com>
-* @version 0.1 beta (Feb 08, 2016)
+* @version 0.2 beta (Feb 08, 2016)
 */
 //
 //
@@ -121,37 +121,28 @@ function run() {
 function admin(&$out) {
 $this->getConfig();
 //Database
-$out['AHOST']=$this->config['AHOST'];
+  $out['AHOST']=$this->config['AHOST'];
 	if (!$out['AHOST']) {
 		$out['AHOST']='localhost';
 	}	
-$out['ABASE']=$this->config['ABASE'];
-if (!$out['ABASE']) {
-	$out['ABASE']='asterisk';
-}
-$out['AUSERNAME']=$this->config['AUSERNAME'];
-if (!$out['AUSERNAME']) {
-	$out['AUSERNAME']='root';
-}
-$out['APASSWORD']=$this->config['APASSWORD'];
+  $out['ABASE']=$this->config['ABASE'];
+	if (!$out['ABASE']) {
+	  $out['ABASE']='asterisk';
+  }
+  $out['AUSERNAME']=$this->config['AUSERNAME'];
+	if (!$out['AUSERNAME']) {
+	  $out['AUSERNAME']='root';
+  }
+  $out['APASSWORD']=$this->config['APASSWORD'];
 // AMI
-$out['AMIHOST']=$this->config['AMIHOST'];
-	if (!$out['AMIHOST']) {
-		$out['AMIHOST']='127.0.0.1';
-	}	
-$out['AMIPORT']=$this->config['AMIPORT'];
-if (!$out['AMIPORT']) {
-	$out['AMIPORT']='5038';
-}
-$out['AMIUSERNAME']=$this->config['AMIUSERNAME'];
-if (!$out['AMIUSERNAME']) {
-	$out['AMIUSERNAME']='admin';
-}
-$out['AMIPASSWORD']=$this->config['AMIPASSWORD'];
-//TABLES
+  $out['AMIHOST']=$this->config['AMIHOST'];
+  $out['AMIPORT']=$this->config['AMIPORT'];
+  $out['AMIUSERNAME']=$this->config['AMIUSERNAME'];
+  $out['AMIPASSWORD']=$this->config['AMIPASSWORD'];
 
-$out['TABLE_CDR']=$this->config['TABLE_CDR'];
-$out['FILEDIR_CDR']=$this->config['FILEDIR_CDR'];
+//TABLES
+  $out['TABLE_CDR']=$this->config['TABLE_CDR'];
+  $out['FILEDIR_CDR']=$this->config['FILEDIR_CDR'];
 
 if ($this->view_mode=='update_settings') {
 	global $ahost;
@@ -170,10 +161,10 @@ if ($this->view_mode=='update_settings') {
 	$this->config['AMIUSERNAME']=$amiusername;
 	global $amipassword;
 	$this->config['AMIPASSWORD']=$amipassword;
-        global $table_cdr;
-        $this->config['TABLE_CDR']=$table_cdr;
-        global $filedir_cdr;
-        $this->config['FILEDIR_CDR']=$filedir_cdr;
+    global $table_cdr;
+    $this->config['TABLE_CDR']=$table_cdr;
+    global $filedir_cdr;
+    $this->config['FILEDIR_CDR']=$filedir_cdr;
 	$this->saveConfig();
 	$this->redirect("?");
 }
@@ -183,13 +174,6 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
   if ($this->data_source=='app_asterisk' || $this->data_source=='') {
 	if ($this->view_mode=='' || $this->view_mode=='app_asterisk_admin') {
 		$this->app_asterisk_admin($out);
-	}
-	if ($this->view_mode=='edit_cdr_tables') {
-		$this->edit_cdr_tables($out, $this->id);
-	}
-	if ($this->view_mode=='delete_cdr_tables') {
-		$this->delete_cdr_tables($this->id);
-		$this->redirect("?");
 	}
   }
 
@@ -229,25 +213,6 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 * @access public
 */
  function app_asterisk_admin(&$out) {
-  require(DIR_MODULES.$this->name.'/cdr_tables_search.inc.php');
- }
-/**
-* app_asterisk edit/add
-*
-* @access public
-*/
- function edit_cdr_tables(&$out, $id) {
-  require(DIR_MODULES.$this->name.'/cdr_tables_edit.inc.php');
- }
-/**
-* app_asterisk delete record
-*
-* @access public
-*/
- function delete_cdr_tables($id) {
-  $rec=SQLSelectOne("SELECT * FROM app_asterisk_t_cdr WHERE ID='$id'");
-  // some action for related tables
-  SQLExec("DELETE FROM app_asterisk_t_cdr WHERE ID='".$rec['ID']."'");
  }
 
 /**
@@ -267,13 +232,11 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
    //...
   }
  }
+
  function processCycle() {
- $this->getConfig();
-    include_once (DIR_MODULES.$this->name.'phpagi.php');
-  //to-do
+  $this->getConfig();
+  require(DIR_MODULES.$this->name.'/ami_process.inc.php');
  }
-
-
 
 /**
 * Install
@@ -293,33 +256,7 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 * @access public
 */
  function uninstall() {
-  SQLExec('DROP TABLE IF EXISTS app_asterisk_t_cdr');
   parent::uninstall();
- }
-/**
-* dbInstall
-*
-* Database installation routine
-*
-* @access private
-*/
- function dbInstall() {
-/*
-app_asterisk - 
-*/
-/*
-  $data = <<<EOD
- app_asterisk_t_cdr: ID int(10) unsigned NOT NULL auto_increment
- app_asterisk_t_cdr: TABLE varchar(255) NOT NULL DEFAULT ''
- app_asterisk_t_cdr: CALLDATE varchar(255) NOT NULL DEFAULT ''
- app_asterisk_t_cdr: SRC varchar(255) NOT NULL DEFAULT ''
- app_asterisk_t_cdr: DST varchar(255) NOT NULL DEFAULT ''
- app_asterisk_t_cdr: DURATION varchar(255) NOT NULL DEFAULT ''
- app_asterisk_t_cdr: FILEDIR varchar(255) NOT NULL DEFAULT ''
- app_asterisk_t_cdr: FILENAME varchar(255) NOT NULL DEFAULT ''
-EOD;
-  parent::dbInstall($data);
-*/
  }
 // --------------------------------------------------------------------
 }

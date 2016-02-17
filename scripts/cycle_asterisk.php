@@ -10,11 +10,14 @@ include_once("./load_settings.php");
 include_once(DIR_MODULES . "control_modules/control_modules.class.php");
 $ctl = new control_modules();
 include_once(DIR_MODULES . 'app_asterisk/app_asterisk.class.php');
-$asterisk_module = new asterisk();
-$asterisk_module->getConfig();
-$tmp = SQLSelectOne("SELECT ID FROM app_asterisk LIMIT 1");
-if (!$tmp['ID'])
-   exit; // no devices added -- no need to run this cycle
+$asterisk = new app_asterisk();
+$asterisk->getConfig();
+$tmp = $asterisk->config['AMIHOST'];
+if (!$tmp) {
+  echo date('Y-m-d H:i:s')." : AMI is not configured. No need to run cycle\n";
+   exit;
+};
+
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 $latest_check=0;
 $checkEvery=5; // poll every 5 seconds
@@ -23,8 +26,8 @@ while (1)
    setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
    if ((time()-$latest_check)>$checkEvery) {
     $latest_check=time();
-    echo date('Y-m-d H:i:s').' Polling devices...';
-    $Asterisk_module->processCycle();
+    echo date('Y-m-d H:i:s')." : Connecting to AMI...\n";
+    $asterisk->processCycle();
    }
    if (file_exists('./reboot') || IsSet($_GET['onetime']))
    {
