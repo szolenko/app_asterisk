@@ -1,2 +1,4 @@
-# app_asterisk
+app_asterisk
+=========
+
 Module Asterisk for Majordomo

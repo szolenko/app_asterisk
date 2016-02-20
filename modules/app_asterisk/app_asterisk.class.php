@@ -119,6 +119,48 @@ function run() {
 * @access public
 */
 function admin(&$out) {
+
+// LOG
+global $ajax; 
+global $filter;
+if ($ajax) {
+    header ("HTTP/1.0: 200 OK\n");
+    header ('Content-Type: text/html; charset=utf-8');
+    $limit=50;
+// Find last midifed
+$filename=ROOT.'debmes/log_*-cycle_asterisk.php.txt';
+foreach(glob($filename) as $file) {      
+    $LastModified[] = filemtime($file);
+    $FileName[] = $file;
+}
+$files = array_multisort($LastModified, SORT_NUMERIC, SORT_ASC, $FileName);
+$lastIndex = count($LastModified) - 1;
+// Open file
+$data=LoadFile( $FileName[$lastIndex] );    
+$lines=explode("\n", $data);
+$lines=array_reverse($lines);
+$res_lines=array();
+$total=count($lines);
+$added=0;
+for($i=0;$i<$total;$i++) {
+    if (trim($lines[$i])=='') {
+	continue;
+    }
+    if ($filter && preg_match('/'.preg_quote($filter).'/is', $lines[$i])) {
+	$res_lines[]=$lines[$i];
+	$added++;
+	} elseif (!$filter) {
+	    $res_lines[]=$lines[$i];
+	    $added++;
+    }
+    if ($added>=$limit) {
+	break;
+    }
+}
+echo implode("<br/>", $res_lines);
+exit;
+}
+
 $this->getConfig();
 //Database
   $out['AHOST']=$this->config['AHOST'];
@@ -136,7 +178,6 @@ $this->getConfig();
   $out['APASSWORD']=$this->config['APASSWORD'];
 // AMI
   $out['AMIHOST']=$this->config['AMIHOST'];
-  $out['AMIPORT']=$this->config['AMIPORT'];
   $out['AMIUSERNAME']=$this->config['AMIUSERNAME'];
   $out['AMIPASSWORD']=$this->config['AMIPASSWORD'];
 
@@ -155,8 +196,6 @@ if ($this->view_mode=='update_settings') {
 	$this->config['APASSWORD']=$apassword;
 	global $amihost;
 	$this->config['AMIHOST']=$amihost;
-	global $amiport;
-	$this->config['AMIPORT']=$amiport;
 	global $amiusername;
 	$this->config['AMIUSERNAME']=$amiusername;
 	global $amipassword;
@@ -184,6 +223,10 @@ if ($this->data_source=='cdr_asterisk') {
                 	$this->cdr_search($out);
         		}
         }
+        if ($this->view_mode=='log_search') {
+                $this->log_search($out);
+        }
+
 }
 
 }
@@ -216,6 +259,14 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
  }
 
 /**
+* log search
+*
+* @access public
+*/
+ function log_search(&$out) {
+ }
+
+/**
 * cdr search
 *
 * @access public
@@ -234,8 +285,8 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
  }
 
  function processCycle() {
-  $this->getConfig();
-  require(DIR_MODULES.$this->name.'/ami_process.inc.php');
+//  $this->getConfig();
+//  require(DIR_MODULES.$this->name.'/ami_process.inc.php');
  }
 
 /**
