@@ -7,7 +7,9 @@
 $dictionary=array(
 
 /* general */
-'ARECORDS'=>'Записи',
+'ARECORDS'=>'Записи розмов',
+'AEVENTS'=>'Події',
+'AEVENT'=>'Подія',
 'AHELP'=>'Допомога',
 'ABOUT'=>'Про модуль',
 'AHOST'=>'Сервер',

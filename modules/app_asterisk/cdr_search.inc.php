@@ -7,13 +7,27 @@
    $out['CONTROLPANEL']=1;
   }
 
-$db_host = $this->config['AHOST'];
-$db_name = $this->config['ABASE'];
-$db_username = $this->config['AUSERNAME'];
-$db_password = $this->config['APASSWORD'];
-$db_table = $this->config['TABLE_CDR'];
-$cdr_filedir = '/cached/records';
-$filedir_cdr = $this->config['FILEDIR_CDR'];
+$class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".$this->title."'");
+if ($class_rec['ID'])
+  {
+	$obj_rec = SQLSelectOne("SELECT ID FROM objects WHERE CLASS_ID='".$class_rec['ID']."'");
+	if ($obj_rec['ID'])
+	{
+		$ahost_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='ahost')");
+		$db_host = $ahost_rec['VALUE'];
+		$abase_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='abase')");
+		$db_name = $abase_rec['VALUE'];
+		$ausername_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='ausername')");
+		$db_username = $ausername_rec['VALUE'];
+		$apassword_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='apassword')");
+		$db_password = $apassword_rec['VALUE'];
+		$db_table_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='table_cdr')");
+		$db_table = $db_table_rec['VALUE'];
+		$filedir_cdr_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='filedir_cdr')");
+		$filedir_cdr = $filedir_cdr_rec['VALUE'];
+	}
+  }
+
 if (!$qry_cdr) $qry_cdr = "1";
 
 // SEARCH FILTERS

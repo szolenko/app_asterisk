@@ -7,7 +7,9 @@
 $dictionary=array(
 
 /* general */
-'ARECORDS'=>'Records',
+'ARECORDS'=>'Call records',
+'AEVENTS'=>'Events',
+'AEVENT'=>'Event',
 'AHELP'=>'Help',
 'ABOUT'=>'About',
 'AHOST'=>'Host',

@@ -3,7 +3,7 @@
 * Asterisk 
 * @package project
 * @author Sergii Zolenko <szolenko@gmail.com>
-* @version 0.2 beta (Feb 08, 2016)
+* @version 0.3 beta (Feb 25, 2016)
 */
 //
 //
@@ -162,54 +162,82 @@ exit;
 }
 
 $this->getConfig();
-//Database
-  $out['AHOST']=$this->config['AHOST'];
-	if (!$out['AHOST']) {
-		$out['AHOST']='localhost';
-	}	
-  $out['ABASE']=$this->config['ABASE'];
-	if (!$out['ABASE']) {
-	  $out['ABASE']='asterisk';
-  }
-  $out['AUSERNAME']=$this->config['AUSERNAME'];
-	if (!$out['AUSERNAME']) {
-	  $out['AUSERNAME']='root';
-  }
-  $out['APASSWORD']=$this->config['APASSWORD'];
-// AMI
-  $out['AMIHOST']=$this->config['AMIHOST'];
-  $out['AMIUSERNAME']=$this->config['AMIUSERNAME'];
-  $out['AMIPASSWORD']=$this->config['AMIPASSWORD'];
-
-//TABLES
-  $out['TABLE_CDR']=$this->config['TABLE_CDR'];
-  $out['FILEDIR_CDR']=$this->config['FILEDIR_CDR'];
+  $class_rec = SQLSelectOne("SELECT * FROM classes WHERE TITLE = 'Asterisk'");
+  if ($class_rec['ID'])
+	{
+	  $obj_rec = SQLSelectOne("SELECT * FROM objects WHERE CLASS_ID='".$class_rec['ID']."'");
+	  if ($obj_rec['ID'])
+		{
+		$ahost_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='ahost')");
+		$out['AHOST'] = $ahost_rec['VALUE'];
+		$abase_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='abase')");
+		$out['ABASE'] = $abase_rec['VALUE'];
+		$ausername_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='ausername')");
+		$out['AUSERNAME'] = $ausername_rec['VALUE'];
+		$apassword_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='apassword')");
+		$out['APASSWORD'] = $apassword_rec['VALUE'];
+		$amihost_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='amihost')");
+		$out['AMIHOST'] = $amihost_rec['VALUE'];
+		$amiusername_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='amiusername')");
+		$out['AMIUSERNAME'] = $amiusername_rec['VALUE'];
+		$amipassword_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='amipassword')");
+		$out['AMIPASSWORD'] = $amipassword_rec['VALUE'];
+		$table_cdr_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='table_cdr')");
+		$out['TABLE_CDR'] = $table_cdr_rec['VALUE'];
+		$filedir_cdr_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='filedir_cdr')");
+		$out['FILEDIR_CDR'] = $filedir_cdr_rec['VALUE'];
+		}
+    }
 
 if ($this->view_mode=='update_settings') {
 	global $ahost;
-	$this->config['AHOST']=$ahost;
 	global $abase;
-	$this->config['ABASE']=$abase;
 	global $ausername;
-	$this->config['AUSERNAME']=$ausername;
 	global $apassword;
-	$this->config['APASSWORD']=$apassword;
 	global $amihost;
-	$this->config['AMIHOST']=$amihost;
 	global $amiusername;
-	$this->config['AMIUSERNAME']=$amiusername;
 	global $amipassword;
-	$this->config['AMIPASSWORD']=$amipassword;
-    global $table_cdr;
-    $this->config['TABLE_CDR']=$table_cdr;
-    global $filedir_cdr;
-    $this->config['FILEDIR_CDR']=$filedir_cdr;
-	$this->saveConfig();
+	global $table_cdr;
+	global $filedir_cdr;
+
+$class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE = 'Asterisk'");
+  if ($class_rec['ID'])
+	{
+	  $obj_rec = SQLSelectOne("SELECT * FROM objects WHERE CLASS_ID = '".$class_rec['ID']."'");
+	  if ($obj_rec['ID'])
+		{
+		  $propName = array('ahost', 'abase', 'ausername', 'apassword', 'amihost', 'amiusername', 'amipassword', 'table_cdr', 'filedir_cdr');
+		  $propValue = array($ahost, $abase, $ausername, $apassword, $amihost, $amiusername, $amipassword, $table_cdr, $filedir_cdr);
+		  for ($i = 0; $i < count($propName); $i++)
+			{
+  			  $prop_rec = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID='" . $class_rec['ID'] . "' AND OBJECT_ID='" . $obj_rec['ID'] . "' AND TITLE = '".DBSafe($propName[$i])."'");
+    		  if ($prop_rec['ID'])
+    			{
+				  $value_rec = SQLSelectOne("SELECT ID from pvalues where PROPERTY_NAME ='".$obj_rec['TITLE'].".".$propName[$i]."'");
+				  if (!$value_rec['ID']) {
+      			  $value_rec = array();
+        		  $value_rec['VALUE'] = $propValue[$i];
+		      	  $value_rec['PROPERTY_ID'] = $prop_rec['ID'];
+        		  $value_rec['OBJECT_ID'] = $obj_rec['ID'];
+				  $value_rec['PROPERTY_NAME'] = $obj_rec['TITLE'].".".$propName[$i];
+				  SQLInsert('pvalues', $value_rec);
+				  } else
+					{
+        			  $value_rec['VALUE'] = $propValue[$i];
+					  SQLUpdate('pvalues', $value_rec);
+					}
+        		}
+  			}
+		}
+
+	}
 	$this->redirect("?");
 }
+
 if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
 	$out['SET_DATASOURCE']=1;
 }
+
   if ($this->data_source=='app_asterisk' || $this->data_source=='') {
 	if ($this->view_mode=='' || $this->view_mode=='app_asterisk_admin') {
 		$this->app_asterisk_admin($out);
@@ -226,7 +254,6 @@ if ($this->data_source=='cdr_asterisk') {
         if ($this->view_mode=='log_search') {
                 $this->log_search($out);
         }
-
 }
 
 }
@@ -285,8 +312,6 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
  }
 
  function processCycle() {
-//  $this->getConfig();
-//  require(DIR_MODULES.$this->name.'/ami_process.inc.php');
  }
 
 /**
@@ -297,6 +322,49 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 * @access private
 */
  function install($data='') {
+  $parent_class_rec = SQLSelectOne("SELECT * FROM classes WHERE TITLE = 'Telephony'");
+  if (!$parent_class_rec['ID'])
+	{
+  	  $parent_class_rec = array();
+      $parent_class_rec['TITLE'] = 'Telephony';
+      $parent_class_rec['DESCRIPTION'] = "Класс телефонии";
+      $parent_class_rec['ID'] = SQLInsert('classes', $parent_class_rec);
+    }
+  $class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE = 'Asterisk' AND PARENT_ID = '".$parent_class_rec['ID']."'");
+	if (!$class_rec['ID'])
+	  {
+  		$class_rec = array();
+    	$class_rec['TITLE'] = 'Asterisk';
+    	$class_rec['PARENT_ID'] = $parent_class_rec['ID'];
+    	$class_rec['PARENT_LIST'] = $parent_class_rec['ID'];
+    	$class_rec['DESCRIPTION'] = "Класс ip-телефонии Asterisk";
+    	$class_rec['ID'] = SQLInsert('classes', $class_rec);
+  	  }
+  $obj_rec = SQLSelectOne("SELECT ID FROM objects WHERE CLASS_ID = '".$class_rec['ID']."'");
+  if (!$obj_rec['ID'])
+	{
+  	  $obj_rec = array();
+      $obj_rec['TITLE'] = $this->title;
+	  $obj_rec['CLASS_ID'] = $class_rec['ID'];
+      $obj_rec['DESCRIPTION'] = "Платформа IP-телефонии Asterisk";
+      $obj_rec['ID'] = SQLInsert('objects', $obj_rec);
+    }
+  
+  $propName = array('ahost', 'abase', 'ausername', 'apassword', 'amihost', 'amiusername', 'amipassword', 'table_cdr', 'filedir_cdr');
+  $propDescription = array('Mysql сервер', 'Mysql база', 'Mysql пользователь', 'Mysql пароль', 'Хост AMI', 'Пользователь AMI', 'Пароль AMI', 'Имя таблицы CDR', 'Путь к файлам записей разговоров');
+  for ($i = 0; $i < count($propName); $i++)
+	{
+  	  $prop_rec = SQLSelectOne("SELECT ID FROM properties WHERE CLASS_ID='" . $class_rec['ID'] . "' AND TITLE LIKE '" . DBSafe($propName[$i]) . "'");
+      if (!$prop_rec['ID'])
+    	{
+      	  $prop_rec = array();
+          $prop_rec['CLASS_ID'] = $class_rec['ID'];
+          $prop_rec['OBJECT_ID'] = $obj_rec['ID'];
+          $prop_rec['TITLE'] = $propName[$i];
+          $prop_rec['DESCRIPTION'] = $propDescription[$i];
+          $prop_rec['ID'] = SQLInsert('properties', $prop_rec);
+         }
+    }
   parent::install();
  }
 /**
@@ -307,7 +375,23 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 * @access public
 */
  function uninstall() {
+  SQLExec("delete from pvalues where property_id in (select id FROM properties where object_id in (select id from objects where class_id = (select id from classes where title = 'Asterisk')))");
+  SQLExec("delete from properties where object_id in (select id from objects where class_id = (select id from classes where title = 'Asterisk'))");
+  SQLExec("delete from methods where class_id = (select id from classes where title = 'Asterisk')");
+  SQLExec("delete from objects where class_id = (select id from classes where title = 'Asterisk')");
+  SQLExec("delete from classes where title = 'Asterisk'");
   parent::uninstall();
  }
+
+/**
+* dbInstall
+*
+* Database installation routine
+*
+* @access private
+*/
+ function dbInstall() {
+ }
+
 // --------------------------------------------------------------------
 }
