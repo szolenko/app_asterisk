@@ -47,12 +47,17 @@
  <div class="controls"><input type="password" name="apassword" value="[#APASSWORD#]" class="input"></div>
 </div>
 <td>
-
 <div class="form-group">
  <label class="control-label"[#if ERR_AMIHOST#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_AHOST#>:
  </label>
  <div class="controls"><input type="text" name="amihost" value="[#AMIHOST#]" class="input"></div>
+</div>
+<div class="form-group">
+ <label class="control-label"[#if ERR_AMIHOST#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_APORT#>:
+ </label>
+ <div class="controls"><input type="text" name="amiport" value="[#AMIPORT#]" class="input"></div>
 </div>
 <div class="form-group">
  <label class="control-label"[#if ERR_AMIUSERNAME#] style="color:red;font-weight:bold"[#endif#]>

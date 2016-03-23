@@ -7,7 +7,7 @@
    $out['CONTROLPANEL']=1;
   }
 
-$class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '".$this->title."'");
+$class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE 'AsteriskAMI'");
 if ($class_rec['ID'])
   {
 	$obj_rec = SQLSelectOne("SELECT ID FROM objects WHERE CLASS_ID='".$class_rec['ID']."'");
@@ -123,8 +123,6 @@ if (!$page) {
     $this->session['NUM'] = $page;
     $out['NUM'] = $page;
 }
-
-
 
 
 // DELETE CDR RECORD

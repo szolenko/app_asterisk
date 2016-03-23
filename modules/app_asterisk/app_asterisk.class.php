@@ -3,11 +3,14 @@
 * Asterisk 
 * @package project
 * @author Sergii Zolenko <szolenko@gmail.com>
-* @version 0.3 beta (Feb 25, 2016)
+* @version 1.0.0 (23.03.2016)
 */
 //
 //
+
+
 class app_asterisk extends module {
+
 /**
 * app_asterisk
 *
@@ -162,7 +165,7 @@ exit;
 }
 
 $this->getConfig();
-  $class_rec = SQLSelectOne("SELECT * FROM classes WHERE TITLE = 'Asterisk'");
+  $class_rec = SQLSelectOne("SELECT * FROM classes WHERE TITLE = 'AsteriskAMI'");
   if ($class_rec['ID'])
 	{
 	  $obj_rec = SQLSelectOne("SELECT * FROM objects WHERE CLASS_ID='".$class_rec['ID']."'");
@@ -178,10 +181,12 @@ $this->getConfig();
 		$out['APASSWORD'] = $apassword_rec['VALUE'];
 		$amihost_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='amihost')");
 		$out['AMIHOST'] = $amihost_rec['VALUE'];
+		$amiport_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='amiport')");
+		$out['AMIPORT'] = $amiport_rec['VALUE'];
 		$amiusername_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='amiusername')");
 		$out['AMIUSERNAME'] = $amiusername_rec['VALUE'];
 		$amipassword_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='amipassword')");
-		$out['AMIPASSWORD'] = $amipassword_rec['VALUE'];
+		$out['AMIPASSWORD'] =  $amipassword_rec['VALUE'];
 		$table_cdr_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='table_cdr')");
 		$out['TABLE_CDR'] = $table_cdr_rec['VALUE'];
 		$filedir_cdr_rec = SQLSelectOne("SELECT VALUE from pvalues where property_id = (SELECT ID FROM properties WHERE OBJECT_ID='".$obj_rec['ID']."' AND TITLE='filedir_cdr')");
@@ -195,19 +200,20 @@ if ($this->view_mode=='update_settings') {
 	global $ausername;
 	global $apassword;
 	global $amihost;
+	global $amiport;
 	global $amiusername;
 	global $amipassword;
 	global $table_cdr;
 	global $filedir_cdr;
 
-$class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE = 'Asterisk'");
+$class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE = 'AsteriskAMI'");
   if ($class_rec['ID'])
 	{
 	  $obj_rec = SQLSelectOne("SELECT * FROM objects WHERE CLASS_ID = '".$class_rec['ID']."'");
 	  if ($obj_rec['ID'])
 		{
-		  $propName = array('ahost', 'abase', 'ausername', 'apassword', 'amihost', 'amiusername', 'amipassword', 'table_cdr', 'filedir_cdr');
-		  $propValue = array($ahost, $abase, $ausername, $apassword, $amihost, $amiusername, $amipassword, $table_cdr, $filedir_cdr);
+		  $propName = array('ahost', 'abase', 'ausername', 'apassword', 'amihost', 'amiport','amiusername', 'amipassword', 'table_cdr', 'filedir_cdr');
+		  $propValue = array($ahost, $abase, $ausername, $apassword, $amihost, $amiport, $amiusername, $amipassword, $table_cdr, $filedir_cdr);
 		  for ($i = 0; $i < count($propName); $i++)
 			{
   			  $prop_rec = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID='" . $class_rec['ID'] . "' AND OBJECT_ID='" . $obj_rec['ID'] . "' AND TITLE = '".DBSafe($propName[$i])."'");
@@ -302,17 +308,16 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
   require(DIR_MODULES.$this->name.'/cdr_search.inc.php');
  }
 
- function processSubscription($event, $details='') {
- $this->getConfig();
-  if ($event=='SAY') {
-   $level=$details['level'];
-   $message=$details['message'];
-   //...
+function processSubscription($event, $details='')
+  {
+	$this->getConfig();
+	if ($event=='SAY')
+	  {
+		$level=$details['level'];
+		$message=$details['message'];
+  		//...
+	  }
   }
- }
-
- function processCycle() {
- }
 
 /**
 * Install
@@ -321,6 +326,8 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 *
 * @access private
 */
+
+// Add classes and object
  function install($data='') {
   $parent_class_rec = SQLSelectOne("SELECT * FROM classes WHERE TITLE = 'Telephony'");
   if (!$parent_class_rec['ID'])
@@ -330,11 +337,11 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
       $parent_class_rec['DESCRIPTION'] = "Класс телефонии";
       $parent_class_rec['ID'] = SQLInsert('classes', $parent_class_rec);
     }
-  $class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE = 'Asterisk' AND PARENT_ID = '".$parent_class_rec['ID']."'");
+  $class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE = 'AsteriskAMI' AND PARENT_ID = '".$parent_class_rec['ID']."'");
 	if (!$class_rec['ID'])
 	  {
   		$class_rec = array();
-    	$class_rec['TITLE'] = 'Asterisk';
+    	$class_rec['TITLE'] = 'AsteriskAMI';
     	$class_rec['PARENT_ID'] = $parent_class_rec['ID'];
     	$class_rec['PARENT_LIST'] = $parent_class_rec['ID'];
     	$class_rec['DESCRIPTION'] = "Класс ip-телефонии Asterisk";
@@ -349,9 +356,10 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
       $obj_rec['DESCRIPTION'] = "Платформа IP-телефонии Asterisk";
       $obj_rec['ID'] = SQLInsert('objects', $obj_rec);
     }
-  
-  $propName = array('ahost', 'abase', 'ausername', 'apassword', 'amihost', 'amiusername', 'amipassword', 'table_cdr', 'filedir_cdr');
-  $propDescription = array('Mysql сервер', 'Mysql база', 'Mysql пользователь', 'Mysql пароль', 'Хост AMI', 'Пользователь AMI', 'Пароль AMI', 'Имя таблицы CDR', 'Путь к файлам записей разговоров');
+
+// Add properties
+  $propName = array('status', 'ahost', 'abase', 'ausername', 'apassword', 'amihost', 'amiport','amiusername', 'amipassword', 'table_cdr', 'filedir_cdr');
+  $propDescription = array('Статус cервера: 1 - включен, 0 - выключен', 'Mysql сервер', 'Mysql база', 'Mysql пользователь', 'Mysql пароль', 'Хост AMI', 'Порт AMI', 'Пользователь AMI', 'Пароль AMI', 'Имя таблицы CDR', 'Путь к файлам записей разговоров');
   for ($i = 0; $i < count($propName); $i++)
 	{
   	  $prop_rec = SQLSelectOne("SELECT ID FROM properties WHERE CLASS_ID='" . $class_rec['ID'] . "' AND TITLE LIKE '" . DBSafe($propName[$i]) . "'");
@@ -365,6 +373,100 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
           $prop_rec['ID'] = SQLInsert('properties', $prop_rec);
          }
     }
+
+// Add class methods
+  $class_method_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $class_rec['ID'] . "' AND TITLE LIKE 'Events'");
+	if (!$class_method_rec['ID'])
+  	  {
+    	$class_method_rec = array();
+        $class_method_rec['CLASS_ID'] = $class_rec['ID'];
+        $class_method_rec['TITLE'] = 'Events';
+        $class_method_rec['DESCRIPTION'] = 'События, сгенерированные сервером Asterisk';
+		$class_method_rec['CODE'] = "echo date('Y-m-d H:i:s')".".\" : Event \".".'$params[\'Event\']'.".\" received. Process... \\n\"".";\n";
+		$class_method_rec['CODE'] .= "\n";
+        $class_method_rec['ID'] = SQLInsert('methods', $class_method_rec);
+       }
+
+  $class_method_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $class_rec['ID'] . "' AND TITLE LIKE 'Action'");
+	if (!$class_method_rec['ID'])
+  	  {
+    	$class_method_rec = array();
+        $class_method_rec['CLASS_ID'] = $class_rec['ID'];
+        $class_method_rec['TITLE'] = 'Action';
+        $class_method_rec['DESCRIPTION'] = 'Команды серверу Asterisk';
+        $class_method_rec['ID'] = SQLInsert('methods', $class_method_rec);
+       }
+
+// Add object methods
+  $method_rec = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $obj_rec['ID'] . "' AND TITLE LIKE 'Events'");
+      if (!$method_rec['ID'])
+    	{
+      	  $method_rec = array();
+          $method_rec['OBJECT_ID'] = $obj_rec['ID'];
+          $method_rec['TITLE'] = "Events";
+		  $method_rec['CALL_PARENT'] = "1";
+		  $method_rec['CODE']  = '$proc = $params'."['Event'];\n";
+		  $method_rec['CODE'] .= 'if (function_exists($proc))'."\n";
+		  $method_rec['CODE'] .= "	{\n";
+		  $method_rec['CODE'] .= '		$proc($params)'.";\n";
+		  $method_rec['CODE'] .= "	} else {\n";
+		  $method_rec['CODE'] .= "echo date('Y-m-d H:i:s')".".\" : Call to non existent function \".".'$params[\'Event\']'.";\n";
+		  $method_rec['CODE'] .= "		}\n";
+		  $method_rec['CODE'] .= "return 0;\n";
+		  $method_rec['CODE'] .= "\n";
+          $method_rec['ID'] = SQLInsert('methods', $method_rec);
+         }
+
+  $method_rec = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $obj_rec['ID'] . "' AND TITLE LIKE 'Action'");
+      if (!$method_rec['ID'])
+    	{
+      	  $method_rec = array();
+          $method_rec['OBJECT_ID'] = $obj_rec['ID'];
+          $method_rec['TITLE'] = "Action";
+		  $method_rec['CALL_PARENT'] = "1";
+		  $method_rec['CODE']  = '$command = $params'."['command'];\n";
+		  $method_rec['CODE'] .= '$option = $params'."['option'];\n";
+		  $method_rec['CODE'] .= "\n";
+		  $method_rec['CODE'] .= '$amihost = $this'."->getProperty('amihost');\n";
+		  $method_rec['CODE'] .= '$amiport = $this'."->getProperty('amiport');\n";
+		  $method_rec['CODE'] .= '$amiusername = $this'."->getProperty('amiusername');\n";
+		  $method_rec['CODE'] .= '$amipassword = $this'."->getProperty('amipassword');\n";
+		  $method_rec['CODE'] .= "\n";
+		  $method_rec['CODE'] .= "include_once ('./lib/phpagi/phpagi-asmanager.php');\n";
+		  $method_rec['CODE'] .= "\n";
+		  $method_rec['CODE'] .= 'if (!$params'."['command']) {\n";
+		  $method_rec['CODE'] .= "  DebMes (\" Asterisk : Can't process empty command\");\n";
+		  $method_rec['CODE'] .= "  exit;\n";
+		  $method_rec['CODE'] .= "}\n";
+		  $method_rec['CODE'] .= "\n";
+		  $method_rec['CODE'] .= 'if (!$amihost) '."{\n";
+		  $method_rec['CODE'] .= "  DebMes (\" Asterisk : Can't process command - AMI is not configured\");\n";
+		  $method_rec['CODE'] .= "  exit;\n";
+		  $method_rec['CODE'] .= "}\n";
+		  $method_rec['CODE'] .= "\n";
+		  $method_rec['CODE'] .= '$com_man'." = new AGI_AsteriskManager();\n";
+		  $method_rec['CODE'] .= 'if (!$com_man->connect($amihost.'."\":\"".'.$amiport, $amiusername, $amipassword'."))\n";
+		  $method_rec['CODE'] .= "  {\n";
+		  $method_rec['CODE'] .= "	DebMes (\" Asterisk : Can't connect to AMI $amihost\");\n";
+		  $method_rec['CODE'] .= "        exit;\n";
+		  $method_rec['CODE'] .= "    }\n";
+		  $method_rec['CODE'] .= "\n";
+		  $method_rec['CODE'] .= '$response = $com_man->$command($option);'."\n";
+		  $method_rec['CODE'] .= '$com_man->disconnect();'."\n";
+		  $method_rec['CODE'] .= "\n";
+		  $method_rec['CODE'] .= 'if ($response['."'Response'] != 'Success')\n";
+		  $method_rec['CODE'] .= "  {\n";
+		  $method_rec['CODE'] .= "	DebMes (\" Asterisk : Can't process command => \".".'$response'."['Message']);\n";
+		  $method_rec['CODE'] .= "  }\n";
+		  $method_rec['CODE'] .= "\n";
+		  $method_rec['CODE'] .= "return ".'$response';
+		  $method_rec['CODE'] .= "\n";
+		  $method_rec['CODE'] .= "// For debug\n";
+		  $method_rec['CODE'] .= "// DebMes (\" Asterisk : Process command ".'$command'."\");\n";
+		  $method_rec['CODE'] .= "// DebMes (".'$response'.");\n";
+          $method_rec['ID'] = SQLInsert('methods', $method_rec);
+         }
+
   parent::install();
  }
 /**
@@ -375,11 +477,12 @@ if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']
 * @access public
 */
  function uninstall() {
-  SQLExec("delete from pvalues where property_id in (select id FROM properties where object_id in (select id from objects where class_id = (select id from classes where title = 'Asterisk')))");
-  SQLExec("delete from properties where object_id in (select id from objects where class_id = (select id from classes where title = 'Asterisk'))");
-  SQLExec("delete from methods where class_id = (select id from classes where title = 'Asterisk')");
-  SQLExec("delete from objects where class_id = (select id from classes where title = 'Asterisk')");
-  SQLExec("delete from classes where title = 'Asterisk'");
+  SQLExec("delete from pvalues where property_id in (select id FROM properties where object_id in (select id from objects where class_id in (select id from classes where title = 'AsteriskAMI')))");
+  SQLExec("delete from properties where object_id in (select id from objects where class_id = (select id from classes where title = 'AsteriskAMI'))");
+  SQLExec("delete from methods where class_id = (select id from classes where title = 'AsteriskAMI')");
+  SQLExec("delete from methods where object_id in (select id from objects where class_id = (select id from classes where title = 'AsteriskAMI'))");
+  SQLExec("delete from objects where class_id = (select id from classes where title = 'AsteriskAMI')");
+  SQLExec("delete from classes where title = 'AsteriskAMI'");
   parent::uninstall();
  }
 
