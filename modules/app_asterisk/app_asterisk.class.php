@@ -3,7 +3,7 @@
 * Asterisk 
 * @package project
 * @author Sergii Zolenko <szolenko@gmail.com>
-* @version 1.0.0 (23.03.2016)
+* @version 1.1.0 (25.03.2016)
 */
 //
 //
@@ -217,50 +217,58 @@ $class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE = 'AsteriskAMI'");
 		  for ($i = 0; $i < count($propName); $i++)
 			{
   			  $prop_rec = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID='" . $class_rec['ID'] . "' AND OBJECT_ID='" . $obj_rec['ID'] . "' AND TITLE = '".DBSafe($propName[$i])."'");
-    		  if ($prop_rec['ID'])
-    			{
+    			    if ($prop_rec['ID'])
+    			    {
 				  $value_rec = SQLSelectOne("SELECT ID from pvalues where PROPERTY_NAME ='".$obj_rec['TITLE'].".".$propName[$i]."'");
-				  if (!$value_rec['ID']) {
-      			  $value_rec = array();
-        		  $value_rec['VALUE'] = $propValue[$i];
-		      	  $value_rec['PROPERTY_ID'] = $prop_rec['ID'];
-        		  $value_rec['OBJECT_ID'] = $obj_rec['ID'];
-				  $value_rec['PROPERTY_NAME'] = $obj_rec['TITLE'].".".$propName[$i];
-				  SQLInsert('pvalues', $value_rec);
+				  if (!$value_rec['ID'])
+				    {
+      					$value_rec = array();
+        				$value_rec['VALUE'] = $propValue[$i];
+		      			$value_rec['PROPERTY_ID'] = $prop_rec['ID'];
+        				$value_rec['OBJECT_ID'] = $obj_rec['ID'];
+					$value_rec['PROPERTY_NAME'] = $obj_rec['TITLE'].".".$propName[$i];
+					SQLInsert('pvalues', $value_rec);
 				  } else
-					{
-        			  $value_rec['VALUE'] = $propValue[$i];
-					  SQLUpdate('pvalues', $value_rec);
-					}
-        		}
+				    {
+        				$value_rec['VALUE'] = $propValue[$i];
+					SQLUpdate('pvalues', $value_rec);
+				    }
+        		    }
   			}
 		}
 
 	}
-	$this->redirect("?");
+    $this->redirect("?");
 }
 
-if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
+if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source'])
+    {
 	$out['SET_DATASOURCE']=1;
-}
+    }
 
-  if ($this->data_source=='app_asterisk' || $this->data_source=='') {
-	if ($this->view_mode=='' || $this->view_mode=='app_asterisk_admin') {
+  if ($this->data_source=='app_asterisk' || $this->data_source=='')
+    {
+	if ($this->view_mode=='' || $this->view_mode=='app_asterisk_admin')
+	    {
 		$this->app_asterisk_admin($out);
-	}
-  }
+	    }
+    }
 
-if ($this->data_source=='cdr_asterisk') {
-        if ($this->view_mode=='' || $this->view_mode=='cdr_search') {
+if ($this->data_source=='cdr_asterisk')
+    {
+        if ($this->view_mode=='' || $this->view_mode=='cdr_search')
+	    {
                 $this->cdr_search($out);
-        		if ($this->mode=='cdr_delete') {
+        	if ($this->mode=='cdr_delete')
+		    {
                 	$this->cdr_search($out);
-        		}
-        }
-        if ($this->view_mode=='log_search') {
+        	    }
+    	    }
+        if ($this->view_mode=='log_search')
+	    {
                 $this->log_search($out);
-        }
-}
+    	    }
+    }
 
 }
 /**
@@ -270,43 +278,50 @@ if ($this->data_source=='cdr_asterisk') {
 *
 * @access public
 */
-function usual(&$out) {
-  $this->admin($out);
-if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source']) {
-	$out['SET_DATASOURCE']=1;
-}
-  if ($this->data_source=='cdr_asterisk' || $this->data_source=='') {
-        if ($this->view_mode=='' || $this->view_mode=='cdr_search') {
-                $this->cdr_search($out);
-        }
-  }
+function usual(&$out)
+    {
+	$this->admin($out);
+	if (isset($this->data_source) && !$_GET['data_source'] && !$_POST['data_source'])
+	    {
+		$out['SET_DATASOURCE']=1;
+	    }
+	if ($this->data_source=='cdr_asterisk' || $this->data_source=='')
+	    {
+    		if ($this->view_mode=='' || $this->view_mode=='cdr_search')
+		    {
+            		$this->cdr_search($out);
+    		    }
+	    }
 
-}
+    }
 
 /**
 * app_asterisk admin
 *
 * @access public
 */
- function app_asterisk_admin(&$out) {
- }
+ function app_asterisk_admin(&$out)
+    {
+    }
 
 /**
 * log search
 *
 * @access public
 */
- function log_search(&$out) {
- }
+ function log_search(&$out)
+    {
+    }
 
 /**
 * cdr search
 *
 * @access public
 */
- function cdr_search(&$out) {
-  require(DIR_MODULES.$this->name.'/cdr_search.inc.php');
- }
+ function cdr_search(&$out)
+    {
+	require(DIR_MODULES.$this->name.'/cdr_search.inc.php');
+    }
 
 function processSubscription($event, $details='')
   {
@@ -332,30 +347,30 @@ function processSubscription($event, $details='')
   $parent_class_rec = SQLSelectOne("SELECT * FROM classes WHERE TITLE = 'Telephony'");
   if (!$parent_class_rec['ID'])
 	{
-  	  $parent_class_rec = array();
-      $parent_class_rec['TITLE'] = 'Telephony';
-      $parent_class_rec['DESCRIPTION'] = "Класс телефонии";
-      $parent_class_rec['ID'] = SQLInsert('classes', $parent_class_rec);
-    }
+  	    $parent_class_rec = array();
+    	    $parent_class_rec['TITLE'] = 'Telephony';
+    	    $parent_class_rec['DESCRIPTION'] = "Класс телефонии";
+    	    $parent_class_rec['ID'] = SQLInsert('classes', $parent_class_rec);
+	}
   $class_rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE = 'AsteriskAMI' AND PARENT_ID = '".$parent_class_rec['ID']."'");
 	if (!$class_rec['ID'])
 	  {
-  		$class_rec = array();
-    	$class_rec['TITLE'] = 'AsteriskAMI';
-    	$class_rec['PARENT_ID'] = $parent_class_rec['ID'];
-    	$class_rec['PARENT_LIST'] = $parent_class_rec['ID'];
-    	$class_rec['DESCRIPTION'] = "Класс ip-телефонии Asterisk";
-    	$class_rec['ID'] = SQLInsert('classes', $class_rec);
+	    $class_rec = array();
+    	    $class_rec['TITLE'] = 'AsteriskAMI';
+    	    $class_rec['PARENT_ID'] = $parent_class_rec['ID'];
+    	    $class_rec['PARENT_LIST'] = $parent_class_rec['ID'];
+    	    $class_rec['DESCRIPTION'] = "Класс ip-телефонии Asterisk";
+    	    $class_rec['ID'] = SQLInsert('classes', $class_rec);
   	  }
   $obj_rec = SQLSelectOne("SELECT ID FROM objects WHERE CLASS_ID = '".$class_rec['ID']."'");
   if (!$obj_rec['ID'])
 	{
-  	  $obj_rec = array();
-      $obj_rec['TITLE'] = $this->title;
-	  $obj_rec['CLASS_ID'] = $class_rec['ID'];
-      $obj_rec['DESCRIPTION'] = "Платформа IP-телефонии Asterisk";
-      $obj_rec['ID'] = SQLInsert('objects', $obj_rec);
-    }
+  	    $obj_rec = array();
+    	    $obj_rec['TITLE'] = $this->title;
+	    $obj_rec['CLASS_ID'] = $class_rec['ID'];
+    	    $obj_rec['DESCRIPTION'] = "Платформа IP-телефонии Asterisk";
+    	    $obj_rec['ID'] = SQLInsert('objects', $obj_rec);
+	}
 
 // Add properties
   $propName = array('status', 'ahost', 'abase', 'ausername', 'apassword', 'amihost', 'amiport','amiusername', 'amipassword', 'table_cdr', 'filedir_cdr');
@@ -375,100 +390,68 @@ function processSubscription($event, $details='')
     }
 
 // Add class methods
-  $class_method_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $class_rec['ID'] . "' AND TITLE LIKE 'Events'");
-	if (!$class_method_rec['ID'])
-  	  {
-    	$class_method_rec = array();
-        $class_method_rec['CLASS_ID'] = $class_rec['ID'];
-        $class_method_rec['TITLE'] = 'Events';
-        $class_method_rec['DESCRIPTION'] = 'События, сгенерированные сервером Asterisk';
-		$class_method_rec['CODE'] = "echo date('Y-m-d H:i:s')".".\" : Event \".".'$params[\'Event\']'.".\" received. Process... \\n\"".";\n";
-		$class_method_rec['CODE'] .= "\n";
-        $class_method_rec['ID'] = SQLInsert('methods', $class_method_rec);
-       }
-
-  $class_method_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $class_rec['ID'] . "' AND TITLE LIKE 'Action'");
-	if (!$class_method_rec['ID'])
-  	  {
-    	$class_method_rec = array();
-        $class_method_rec['CLASS_ID'] = $class_rec['ID'];
-        $class_method_rec['TITLE'] = 'Action';
-        $class_method_rec['DESCRIPTION'] = 'Команды серверу Asterisk';
-        $class_method_rec['ID'] = SQLInsert('methods', $class_method_rec);
-       }
+$class_method_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $class_rec['ID'] . "' AND TITLE LIKE 'Action'");
+if (!$class_method_rec['ID'])
+    {
+	$class_method_rec = array();
+    	$class_method_rec['CLASS_ID'] = $class_rec['ID'];
+    	$class_method_rec['TITLE'] = 'Action';
+    	$class_method_rec['DESCRIPTION'] = 'Команды серверу Asterisk';
+    	$class_method_rec['ID'] = SQLInsert('methods', $class_method_rec);
+    }
 
 // Add object methods
-  $method_rec = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $obj_rec['ID'] . "' AND TITLE LIKE 'Events'");
-      if (!$method_rec['ID'])
-    	{
-      	  $method_rec = array();
-          $method_rec['OBJECT_ID'] = $obj_rec['ID'];
-          $method_rec['TITLE'] = "Events";
-		  $method_rec['CALL_PARENT'] = "1";
-		  $method_rec['CODE']  = '$proc = $params'."['Event'];\n";
-		  $method_rec['CODE'] .= 'if (function_exists($proc))'."\n";
-		  $method_rec['CODE'] .= "	{\n";
-		  $method_rec['CODE'] .= '		$proc($params)'.";\n";
-		  $method_rec['CODE'] .= "	} else {\n";
-		  $method_rec['CODE'] .= "echo date('Y-m-d H:i:s')".".\" : Call to non existent function \".".'$params[\'Event\']'.";\n";
-		  $method_rec['CODE'] .= "		}\n";
-		  $method_rec['CODE'] .= "return 0;\n";
-		  $method_rec['CODE'] .= "\n";
-          $method_rec['ID'] = SQLInsert('methods', $method_rec);
-         }
-
-  $method_rec = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $obj_rec['ID'] . "' AND TITLE LIKE 'Action'");
-      if (!$method_rec['ID'])
-    	{
-      	  $method_rec = array();
-          $method_rec['OBJECT_ID'] = $obj_rec['ID'];
-          $method_rec['TITLE'] = "Action";
-		  $method_rec['CALL_PARENT'] = "1";
-		  $method_rec['CODE']  = '$command = $params'."['command'];\n";
-		  $method_rec['CODE'] .= '$option = $params'."['option'];\n";
-		  $method_rec['CODE'] .= "\n";
-		  $method_rec['CODE'] .= '$amihost = $this'."->getProperty('amihost');\n";
-		  $method_rec['CODE'] .= '$amiport = $this'."->getProperty('amiport');\n";
-		  $method_rec['CODE'] .= '$amiusername = $this'."->getProperty('amiusername');\n";
-		  $method_rec['CODE'] .= '$amipassword = $this'."->getProperty('amipassword');\n";
-		  $method_rec['CODE'] .= "\n";
-		  $method_rec['CODE'] .= "include_once ('./lib/phpagi/phpagi-asmanager.php');\n";
-		  $method_rec['CODE'] .= "\n";
-		  $method_rec['CODE'] .= 'if (!$params'."['command']) {\n";
-		  $method_rec['CODE'] .= "  DebMes (\" Asterisk : Can't process empty command\");\n";
-		  $method_rec['CODE'] .= "  exit;\n";
-		  $method_rec['CODE'] .= "}\n";
-		  $method_rec['CODE'] .= "\n";
-		  $method_rec['CODE'] .= 'if (!$amihost) '."{\n";
-		  $method_rec['CODE'] .= "  DebMes (\" Asterisk : Can't process command - AMI is not configured\");\n";
-		  $method_rec['CODE'] .= "  exit;\n";
-		  $method_rec['CODE'] .= "}\n";
-		  $method_rec['CODE'] .= "\n";
-		  $method_rec['CODE'] .= '$com_man'." = new AGI_AsteriskManager();\n";
-		  $method_rec['CODE'] .= 'if (!$com_man->connect($amihost.'."\":\"".'.$amiport, $amiusername, $amipassword'."))\n";
-		  $method_rec['CODE'] .= "  {\n";
-		  $method_rec['CODE'] .= "	DebMes (\" Asterisk : Can't connect to AMI $amihost\");\n";
-		  $method_rec['CODE'] .= "        exit;\n";
-		  $method_rec['CODE'] .= "    }\n";
-		  $method_rec['CODE'] .= "\n";
-		  $method_rec['CODE'] .= '$response = $com_man->$command($option);'."\n";
-		  $method_rec['CODE'] .= '$com_man->disconnect();'."\n";
-		  $method_rec['CODE'] .= "\n";
-		  $method_rec['CODE'] .= 'if ($response['."'Response'] != 'Success')\n";
-		  $method_rec['CODE'] .= "  {\n";
-		  $method_rec['CODE'] .= "	DebMes (\" Asterisk : Can't process command => \".".'$response'."['Message']);\n";
-		  $method_rec['CODE'] .= "  }\n";
-		  $method_rec['CODE'] .= "\n";
-		  $method_rec['CODE'] .= "return ".'$response';
-		  $method_rec['CODE'] .= "\n";
-		  $method_rec['CODE'] .= "// For debug\n";
-		  $method_rec['CODE'] .= "// DebMes (\" Asterisk : Process command ".'$command'."\");\n";
-		  $method_rec['CODE'] .= "// DebMes (".'$response'.");\n";
-          $method_rec['ID'] = SQLInsert('methods', $method_rec);
-         }
-
+$method_rec = SQLSelectOne("SELECT ID FROM methods WHERE OBJECT_ID='" . $obj_rec['ID'] . "' AND TITLE LIKE 'Action'");
+if (!$method_rec['ID'])
+    {
+	$method_rec = array();
+        $method_rec['OBJECT_ID'] = $obj_rec['ID'];
+        $method_rec['TITLE'] = "Action";
+	$method_rec['CALL_PARENT'] = "1";
+	$method_rec['CODE']  = '$command = $params'."['command'];\n";
+	$method_rec['CODE'] .= '$option = $params'."['option'];\n";
+	$method_rec['CODE'] .= "\n";
+	$method_rec['CODE'] .= '$amihost = $this'."->getProperty('amihost');\n";
+	$method_rec['CODE'] .= '$amiport = $this'."->getProperty('amiport');\n";
+	$method_rec['CODE'] .= '$amiusername = $this'."->getProperty('amiusername');\n";
+	$method_rec['CODE'] .= '$amipassword = $this'."->getProperty('amipassword');\n";
+	$method_rec['CODE'] .= "\n";
+	$method_rec['CODE'] .= "include_once ('./lib/phpagi/phpagi-asmanager.php');\n";
+	$method_rec['CODE'] .= "\n";
+	$method_rec['CODE'] .= 'if (!$params'."['command']) {\n";
+	$method_rec['CODE'] .= "  DebMes (\" Asterisk : Can't process empty command\");\n";
+	$method_rec['CODE'] .= "  exit;\n";
+	$method_rec['CODE'] .= "};\n";
+	$method_rec['CODE'] .= "\n";
+	$method_rec['CODE'] .= 'if (!$amihost) '."{\n";
+	$method_rec['CODE'] .= "  DebMes (\" Asterisk : Can't process command - AMI is not configured\");\n";
+	$method_rec['CODE'] .= "  exit;\n";
+	$method_rec['CODE'] .= "};\n";
+	$method_rec['CODE'] .= "\n";
+	$method_rec['CODE'] .= '$com_man'." = new AGI_AsteriskManager();\n";
+	$method_rec['CODE'] .= 'if (!$com_man->connect($amihost.'."\":\"".'.$amiport, $amiusername, $amipassword'."))\n";
+	$method_rec['CODE'] .= "  {\n";
+	$method_rec['CODE'] .= "	DebMes (\" Asterisk : Can't connect to AMI $amihost\");\n";
+	$method_rec['CODE'] .= "        exit;\n";
+	$method_rec['CODE'] .= "    };\n";
+	$method_rec['CODE'] .= "\n";
+	$method_rec['CODE'] .= '$response = $com_man->$command($option);'."\n";
+	$method_rec['CODE'] .= '$com_man->disconnect();'."\n";
+	$method_rec['CODE'] .= "\n";
+	$method_rec['CODE'] .= 'if ($response['."'Response'] != 'Success')\n";
+	$method_rec['CODE'] .= "  {\n";
+	$method_rec['CODE'] .= "	DebMes (\" Asterisk : Can't process command => \".".'$response'."['Message']);\n";
+	$method_rec['CODE'] .= "  };\n";
+	$method_rec['CODE'] .= "\n";
+	$method_rec['CODE'] .= "return ".'$response';
+	$method_rec['CODE'] .= "\n";
+	$method_rec['CODE'] .= "// For debug\n";
+	$method_rec['CODE'] .= "// DebMes (\" Asterisk : Process command ".'$command'."\");\n";
+	$method_rec['CODE'] .= "// DebMes (".'$response'.");\n";
+        $method_rec['ID'] = SQLInsert('methods', $method_rec);
+    }
   parent::install();
- }
+}
 /**
 * Uninstall
 *
@@ -493,8 +476,9 @@ function processSubscription($event, $details='')
 *
 * @access private
 */
- function dbInstall() {
- }
+ function dbInstall()
+    {
+    }
 
 // --------------------------------------------------------------------
 }
