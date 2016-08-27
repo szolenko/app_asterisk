@@ -3,7 +3,7 @@
 * Asterisk 
 * @package project
 * @author Sergii Zolenko <szolenko@gmail.com>
-* @version 1.1.0 (25.03.2016)
+* @version 1.1.1 (27.08.2016)
 */
 //
 //
@@ -443,7 +443,7 @@ if (!$method_rec['ID'])
 	$method_rec['CODE'] .= "	DebMes (\" Asterisk : Can't process command => \".".'$response'."['Message']);\n";
 	$method_rec['CODE'] .= "  };\n";
 	$method_rec['CODE'] .= "\n";
-	$method_rec['CODE'] .= "return ".'$response';
+	$method_rec['CODE'] .= "return ".'$response'.";";
 	$method_rec['CODE'] .= "\n";
 	$method_rec['CODE'] .= "// For debug\n";
 	$method_rec['CODE'] .= "// DebMes (\" Asterisk : Process command ".'$command'."\");\n";
