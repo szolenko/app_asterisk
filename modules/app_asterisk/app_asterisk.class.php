@@ -3,7 +3,7 @@
 * Asterisk 
 * @package project
 * @author Sergii Zolenko <szolenko@gmail.com>
-* @version 1.1.1 (27.08.2016)
+* @version 1.1.2 (13.02.2017)
 */
 //
 //
