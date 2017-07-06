@@ -97,47 +97,45 @@ $out['SORTBY_CDR']=$sortby_cdr;
 
 //SEARCH RESULT
 if ($db_table){
-  $ast_db = mysql_connect($db_host, $db_username, $db_password) or die("Could not connect: " . mysql_error());
-  mysql_select_db($db_name, $ast_db) or die("Could not select DB: " . mysql_error());
-  $qry = mysql_query("SELECT * FROM ".$db_table." WHERE ".$qry_cdr." ORDER BY ".$sortby_cdr) or die(mysql_error());
-  mysql_close($ast_db);
-  } else {
-	Debmes ("Asterisk table CDR not present");
+    $ast_db = mysqli_connect($db_host, $db_username, $db_password,$db_name);
+    $qry = "SELECT * FROM ".$db_table." WHERE ".$qry_cdr." ORDER BY ".$sortby_cdr;
+    $res = mysqli_query($ast_db, $qry);
+    while ($res_cdr[] = mysqli_fetch_array($res, MYSQLI_ASSOC)) {
+	$out['CDRRECORDS'] = $res_cdr;
+	$out['FILEDIR_CDR'] = $filedir_cdr;
+	};
+    mysqli_close($ast_db);
+} else {
+    Debmes ("Asterisk table CDR not present");
 }
 
-while ($res_cdr[] = mysql_fetch_array($qry,MYSQL_ASSOC)) {
-$out['CDRRECORDS'] = $res_cdr;
-$out['FILEDIR_CDR'] = $filedir_cdr;
-};
 
 // PAGING 
-
- if ($out['CDRRECORDS'][0]['calldate']){
-   paging($out['CDRRECORDS'], $session->data['recperpage'], $out); // search result paging
-};
-global $page;
-if (!$page) {
-    $page = $this->session['NUM'];
-    $out['NUM'] = $page;
-  } else {
-    $this->session['NUM'] = $page;
-    $out['NUM'] = $page;
-}
+    if ($out['CDRRECORDS'][0]['calldate']){
+	paging($out['CDRRECORDS'], $session->data['recperpage'], $out); // search result paging
+    };
+    global $page;
+    if (!$page) {
+    	$page = $this->session['NUM'];
+    	$out['NUM'] = $page;
+    } else {
+    	$this->session['NUM'] = $page;
+    	$out['NUM'] = $page;
+    }
 
 
 // DELETE CDR RECORD
 global $u_id;
 if ($this->mode=='cdr_delete') {
-if ($u_id) {
-$ast_db = mysql_connect($db_host, $db_username, $db_password)
-    or die("Could not connect: " . mysql_error());
-mysql_select_db($db_name, $ast_db)
-    or die("Could not select DB: " . mysql_error());
-$qry = mysql_query("SELECT * FROM ".$db_table." WHERE uniqueid='".$u_id."'")
-    or die(mysql_error());
-  // some action for related tables
-if ($qry) {  mysql_query("DELETE FROM ".$db_table." WHERE uniqueid='".$u_id."'");}
-mysql_close($ast_db);
- }
+    if ($u_id) {
+	$ast_db = mysqli_connect($db_host, $db_username, $db_password,$db_name);
+	$qry = "SELECT * FROM ".$db_table." WHERE uniqueid='".$u_id."'";
+	$res = mysqli_query($ast_db,$qry);
+	 // some action for related tables
+	if ($res) {
+	    mysqli_query($ast_db,"DELETE FROM ".$db_table." WHERE uniqueid='".$u_id."'");
+	};
+	mysqli_close($ast_db);
+    }
 }
 ?>
